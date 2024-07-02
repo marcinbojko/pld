@@ -1,0 +1,8 @@
+skip_list:
+  - no-handler
+  - command-instead-of-shell
+  - package-latest
+  - git-latest
+  - yaml[line-length]
+exclude_paths:
+  - .github/

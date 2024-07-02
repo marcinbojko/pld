@@ -1,0 +1,116 @@
+# Tasks for initial steps - time sync, remove obsolete repositories, files, keys, packages
+# remove obsolete repositories
+- name: Remove obsolete repositories from variables file
+  ansible.builtin.apt_repository:
+    repo: "{{ item.repo }}"
+    state: absent
+    update_cache: false
+  loop: "{{ pld_repositories_remove }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_repositories_remove
+  until: r_repositories_remove is success
+  any_errors_fatal: false
+  tags:
+    - repositories
+    - base
+    - obsolete
+# Tasks removes all files from `pld_files_remove` list
+- name: Remove_obsolete_files_from_variables_file
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ pld_files_remove | default([]) }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_files_remove
+  until: r_files_remove is success
+  any_errors_fatal: false
+  ignore_errors: true
+  tags:
+    - files
+    - base
+    - obsolete
+# remove obsolete files from 'bin path'
+- name: Remove obsolete files bin path from variables file
+  ansible.builtin.file:
+    path: "{{ pld_bin_path }}/{{ item.name }}"
+    state: absent
+  loop: "{{ pld_files_remove_bin_path }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_files_remove_bin_path
+  until: r_files_remove_bin_path is success
+  any_errors_fatal: false
+  ignore_errors: true
+  tags:
+    - files
+    - base
+    - obsolete
+    - bin path
+# remove obsolete keys
+- name: Remove obsolete apt keys
+  ansible.builtin.apt_key:
+    id: "{{ item }}"
+    state: absent
+  loop: "{{ pld_keys_remove }}"
+  register: r_remove_keys
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_remove_keys is success
+  any_errors_fatal: false
+  tags:
+    - keys
+    - base
+    - obsolete
+  become: true
+# remove obsolete packages
+- name: Remove obsolete apt packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ pld_packages_remove }}"
+  register: r_remove_packages
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_remove_packages is success
+  when: pld_packages_remove is defined
+  any_errors_fatal: false
+  ignore_errors: true
+  tags:
+    - packages
+    - base
+    - obsolete
+- name: Remove_flatpak_apps
+  community.general.flatpak:
+    name: "{{ item.name | string }}"
+    state: absent
+    method: system
+  loop: "{{ pld_flatpak_remove }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_remove_flatpak_apps
+  until: r_remove_flatpak_apps is success
+  any_errors_fatal: false
+  when: pld_remove_flatpak is defined and pld_remove_flatpak
+  tags:
+    - packages
+    - flatpak
+    - remove
+- name: Remove_flatpak_custom_apps
+  community.general.flatpak:
+    name: "{{ item.name | string }}"
+    state: absent
+    method: system
+  loop: "{{ custom_flatpak_remove | default([]) }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_remove_custom_flatpak_apps
+  until: r_remove_custom_flatpak_apps is success
+  any_errors_fatal: false
+  when: (custom_remove_flatpak is defined and custom_remove_flatpak | default([]) | length > 0 ) and pld_remove_flatpak
+  tags:
+    - packages
+    - flatpak
+    - remove
+    - custom

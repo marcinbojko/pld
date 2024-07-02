@@ -1,0 +1,15 @@
+# Tasks removes all files from `pld_files_remove` list
+- name: Remove obsolete files from variables file
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_files_remove
+  until: r_files_remove is success
+  any_errors_fatal: false
+  ignore_errors: true
+  tags:
+    - files
+    - base
+    - obsolete

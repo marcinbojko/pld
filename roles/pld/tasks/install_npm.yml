@@ -1,0 +1,15 @@
+- name: Install npm packages
+  community.general.npm:
+    name: "{{ item.name | string }}"
+    state: "{{ item.state | string }}"
+    global: true
+  loop: "{{ pld_npm }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_install_npm
+  until: r_install_npm is success
+  any_errors_fatal: false
+  when: pld_install_npm is defined and pld_install_npm
+  tags:
+    - packages
+    - npm

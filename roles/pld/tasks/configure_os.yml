@@ -1,0 +1,127 @@
+# Tasks for configuring the OS
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+  register: r_package_facts
+  until: r_package_facts is success
+  changed_when: false
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  tags:
+    - base
+    - neofetch
+  any_errors_fatal: true
+
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ pld_timezone | default('UTC') }}"
+  any_errors_fatal: false
+
+- name: Enable_timeshift_in_rsync_mode
+  ansible.builtin.shell: timeshift --rsync --yes
+  args:
+    creates: /etc/timeshift.json
+  any_errors_fatal: false
+  when: ansible_distribution == 'Linux Mint'
+
+- name: Add user to sudoers
+  ansible.builtin.copy:
+    dest: "/etc/sudoers.d/{{ pld_active_user }}"
+    owner: root
+    group: root
+    mode: '0444'
+    content: |
+      {{ pld_active_user }} ALL=(ALL) NOPASSWD: ALL
+  any_errors_fatal: false
+  retries: "{{ pld_retries_count }}"
+
+- name: Create fstrim folder for systemd override
+  ansible.builtin.file:
+    path: /etc/systemd/system/fstrim.timer.d
+    state: directory
+    mode: '0644'
+
+- name: Create fstrim override for systemd
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/fstrim.timer.d/override.conf
+    content: |
+      [Timer]
+      OnCalendar=hourly
+      OnBootSec=5m
+    mode: '0755'
+  register: r_create_fstrim_override
+
+- name: Start fstrim.timer
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: fstrim.timer
+    state: restarted
+    enabled: true
+  when: r_create_fstrim_override.changed
+
+- name: Sysctl changes
+  ansible.posix.sysctl:
+    name: "{{ item.name | string }}"
+    value: "{{ item.value | string }}"
+    state: "{{ item.state | string }}"
+    reload: true
+  loop: "{{ pld_sysctl }}"
+  register: r_sysctl_changes
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_sysctl_changes is success
+  when: pld_config_sysctl
+
+- name: Change alternatives
+  community.general.alternatives:
+    name: "{{ item.name }}"
+    path: "{{ item.path }}"
+  loop: "{{ pld_alternatives }}"
+  register: r_alternatives
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_alternatives is success
+
+- name: Set EDITOR ENV variable
+  ansible.builtin.lineinfile:
+    dest: "/etc/environment"
+    state: present
+    regexp: "^{{ item.name }}"
+    line: "{{ item.name }}={{ item.value }}"
+  loop: "{{ pld_global_env }}"
+  register: r_environment
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_environment is success
+
+- name: Reset dconf values
+  community.general.dconf:
+    key: "{{ item.key }}"
+    state: "{{ item.state }}"
+  loop: "{{ pld_dconf }}"
+  register: r_dconf_values
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_dconf_values is success
+  when: pld_config_dconf and "absent" in item.state
+  any_errors_fatal: false
+  ignore_errors: true
+  become: true
+  become_user: "{{ pld_active_user }}"
+  tags:
+    - dconf
+- name: Set dconf values
+  community.general.dconf:
+    key: "{{ item.key }}"
+    state: "{{ item.state }}"
+    value: "{{ item.value | string }}"
+  loop: "{{ pld_dconf }}"
+  register: r_dconf_values
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_dconf_values is success
+  when: pld_config_dconf and "present" in item.state
+  become: true
+  become_user: "{{ pld_active_user }}"
+  tags:
+    - dconf

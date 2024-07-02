@@ -1,0 +1,106 @@
+---
+pld_deb822_repositories_optional:
+  - name: dockbarx
+    types: deb
+    suites: jammy
+    components: main
+    uris:
+      - "http://ppa.launchpad.net/xuzhen666/dockbarx/ubuntu"
+    enabled: true
+    architectures: amd64
+    signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x77D026E2EEAD66BD
+  - name: grub-customizer
+    types: deb
+    suites: jammy
+    components: main
+    uris:
+      - "http://ppa.launchpad.net/danielrichter2007/grub-customizer/ubuntu"
+    enabled: true
+    architectures: amd64
+    signed_by: https://keyserver.ubuntu.com/pks/lookup?fingerprint=on&op=get&search=0xA8AA1FAA3F055C03
+  - name: noobslab-icons
+    types: deb
+    suites: eoan
+    components: main
+    uris:
+      - "http://ppa.launchpad.net/noobslab/icons/ubuntu"
+    enabled: true
+    architectures: amd64
+    signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xD530E028F59EAE4D
+  - name: trivy
+    types: deb
+    suites: jammy
+    components: main
+    uris:
+      - "https://aquasecurity.github.io/trivy-repo/deb"
+    enabled: true
+    architectures: amd64
+    signed_by: https://aquasecurity.github.io/trivy-repo/deb/public.key
+  - name: veeam-agent
+    types: deb
+    suites: stable
+    components: veeam
+    uris:
+      - "https://repository.veeam.com/backup/linux/agent/dpkg/debian/public"
+    enabled: true
+    architectures: amd64
+    signed_by: https://repository.veeam.com/keys/veeam.gpg
+  - name: veracrypt
+    types: deb
+    suites: jammy
+    components: main
+    uris:
+      - "http://ppa.launchpad.net/unit193/encryption/ubuntu"
+    enabled: true
+    architectures: amd64
+    signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x03647209B58A653A
+  - name: rancher-desktop
+    types: deb
+    suites: "./"
+    components: []
+    uris:
+      - "https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/"
+    enabled: true
+    signed_by: https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/Release.key
+  - name: lens
+    types: deb
+    suites: stable
+    components: main
+    uris:
+      - "https://downloads.k8slens.dev/apt/debian"
+    enabled: true
+    architectures: amd64
+    signed_by: https://downloads.k8slens.dev/keys/gpg
+  - name: ngrok
+    types: deb
+    suites: buster
+    components: main
+    uris:
+      - "https://ngrok-agent.s3.amazonaws.com"
+    enabled: true
+    architectures: amd64
+    signed_by: https://ngrok-agent.s3.amazonaws.com/ngrok.asc
+  # - name: insynchq
+  #   types: deb
+  #   suites: jammy
+  #   components: non-free contrib
+  #   uris:
+  #     - "https://apt.insync.io/ubuntu"
+  #   enabled: true
+  #   architectures: amd64
+  #   signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xACCAF35C
+pld_packages_essential:
+  - build-essential
+  - dkms
+  - dotnet-runtime-7.0
+  - dotnet-sdk-7.0
+  - gcc
+  - libvte-dev
+  - mc
+  - pv
+  - xz-utils
+  - zorin-os-restricted-extras
+pld_startup:
+  - filename: shutter.desktop
+    source: ./files/apps/shutter/shutter.desktop
+pld_dconf: []

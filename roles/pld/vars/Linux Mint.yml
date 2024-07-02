@@ -1,0 +1,143 @@
+---
+pld_deb822_repositories_optional:
+  - name: dockbarx
+    types: deb
+    suites: jammy
+    components: main
+    uris:
+      - "http://ppa.launchpad.net/xuzhen666/dockbarx/ubuntu"
+    enabled: true
+    architectures: amd64
+    signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x77D026E2EEAD66BD
+  - name: grub-customizer
+    types: deb
+    suites: jammy
+    components: main
+    uris:
+      - "http://ppa.launchpad.net/danielrichter2007/grub-customizer/ubuntu"
+    enabled: true
+    architectures: amd64
+    signed_by: https://keyserver.ubuntu.com/pks/lookup?fingerprint=on&op=get&search=0xA8AA1FAA3F055C03
+  - name: noobslab-icons
+    types: deb
+    suites: eoan
+    components: main
+    uris:
+      - "http://ppa.launchpad.net/noobslab/icons/ubuntu"
+    enabled: true
+    architectures: amd64
+    signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xD530E028F59EAE4D
+  - name: trivy
+    types: deb
+    suites: jammy
+    components: main
+    uris:
+      - "https://aquasecurity.github.io/trivy-repo/deb"
+    enabled: true
+    architectures: amd64
+    signed_by: https://aquasecurity.github.io/trivy-repo/deb/public.key
+  - name: veeam-agent
+    types: deb
+    suites: stable
+    components: veeam
+    uris:
+      - "https://repository.veeam.com/backup/linux/agent/dpkg/debian/public"
+    enabled: true
+    architectures: amd64
+    signed_by: https://repository.veeam.com/keys/veeam.gpg
+  - name: veracrypt
+    types: deb
+    suites: jammy
+    components: main
+    uris:
+      - "http://ppa.launchpad.net/unit193/encryption/ubuntu"
+    enabled: true
+    architectures: amd64
+    signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x03647209B58A653A
+  - name: rancher-desktop
+    types: deb
+    suites: "./"
+    components: []
+    uris:
+      - "https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/"
+    enabled: true
+    signed_by: https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/Release.key
+  - name: lens
+    types: deb
+    suites: stable
+    components: main
+    uris:
+      - "https://downloads.k8slens.dev/apt/debian"
+    enabled: true
+    architectures: amd64
+    signed_by: https://downloads.k8slens.dev/keys/gpg
+  - name: ngrok
+    types: deb
+    suites: buster
+    components: main
+    uris:
+      - "https://ngrok-agent.s3.amazonaws.com"
+    enabled: true
+    architectures: amd64
+    signed_by: https://ngrok-agent.s3.amazonaws.com/ngrok.asc
+  # - name: insynchq
+  #   types: deb
+  #   suites: virginia
+  #   components: non-free contrib
+  #   uris:
+  #     - "https://apt.insync.io/mint"
+  #   enabled: true
+  #   architectures: amd64
+  #   signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xACCAF35C
+pld_packages_essential:
+  - build-essential
+  - dkms
+  - dotnet-runtime-7.0
+  - dotnet-sdk-7.0
+  - gcc
+  - libvte-dev
+  - mc
+  - mint-meta-codecs
+  - pv
+  - xz-utils
+pld_startup:
+  - filename: redshift-gtk.desktop
+    source: ./files/apps/redshift-gtk/redshift-gtk.desktop
+  - filename: shutter.desktop
+    source: ./files/apps/shutter/shutter.desktop
+  - filename: synapse.desktop
+    source: ./files/apps/synapse/synapse.desktop
+  - filename: DockX.desktop
+    source: ./files/apps/dockbarx/DockX.desktop
+pld_dconf:
+   # remove alt+f7 move window shortcut
+  - key: "/org/cinnamon/muffin/keybindings/begin-move"
+    state: present
+    value: "['']"
+  - key: "/org/cinnamon/desktop/keybindings/wm/begin-move"
+    state: present
+    value: "['']"
+  - key: "/org/cinnamon/desktop/keybindings/custom-keybindings"
+    state: absent
+  - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/binding"
+    state: present
+    value: "['<Super>space']"
+  - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/command"
+    state: present
+    value: "'/usr/bin/synapse'"
+  - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom0/name"
+    state: present
+    value: "'Synapse'"
+  - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/binding"
+    state: present
+    value: "['<Primary><Alt>h']"
+  - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/command"
+    state: present
+    value: "'/usr/bin/diodon'"
+  - key: "/org/cinnamon/desktop/keybindings/custom-keybindings/custom1/name"
+    state: present
+    value: "'Diodon'"
+  # last setting as a summary o the above
+  - key: "/org/cinnamon/desktop/keybindings/custom-list"
+    state: present
+    value: "['custom0', '__dummy__', 'custom1']"

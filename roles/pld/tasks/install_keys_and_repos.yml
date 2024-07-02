@@ -1,0 +1,175 @@
+# refresh apt cache
+- name: Apt initial refresh
+  ansible.builtin.apt:
+    update_cache: true
+    force: true
+  failed_when: false
+  any_errors_fatal: false
+  changed_when: false
+  register: r_apt_initial_refresh
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_apt_initial_refresh is success
+  tags:
+    - packages
+    - base
+# install base apt files in case of clean system
+- name: Install essential packages in case of clean install system
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ pld_packages_clean_system }}"
+  register: r_clean_system_packages
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_clean_system_packages is success
+  any_errors_fatal: false
+  failed_when: false
+  tags:
+    - packages
+    - base
+    - clean_system
+# Install apt pgp keys (files)
+- name: Install apt keys
+  ansible.builtin.apt_key:
+    url: "{{ item }}"
+    state: present
+  loop: "{{ pld_keys }}"
+  register: r_keys
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_keys is success
+  any_errors_fatal: true
+  tags:
+    - keys
+    - base
+# Install apt pgp keys (keyserver)
+- name: Install apt keys from keyserver
+  ansible.builtin.apt_key:
+    keyserver: "{{ item.keyserver }}"
+    state: present
+    id: "{{ item.id }}"
+  loop: "{{ pld_keys_keyserver }}"
+  register: r_keys_keyserver
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_keys_keyserver is success
+  any_errors_fatal: true
+  tags:
+    - keys
+    - base
+- name: Install custom apt keys
+  ansible.builtin.apt_key:
+    url: "{{ item }}"
+    state: present
+  loop: "{{ custom_keys | default([]) }}"
+  register: r_custom_keys
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_custom_keys is success
+  when: custom_keys is defined
+  any_errors_fatal: true
+  tags:
+    - keys
+    - base
+    - custom
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/deb822_repository_module.html
+- name: Add basic repositories as deb822 format
+  ansible.builtin.deb822_repository:
+    name: "{{ item.name }}"
+    types: "{{ item.types | default('deb') }}"
+    suites: "{{ item.suites | default('/') }}"
+    components: "{{ item.components | default(' ') }}"
+    uris: "{{ item.uris }}"
+    enabled: "{{ item.enabled | default('true') }}"
+    signed_by: "{{ item.signed_by | default('null') }}"
+    architectures: "{{ item.architectures | default('') }}"
+  loop: "{{ pld_deb822_repositories }}"
+  register: r_repositories
+  until: r_repositories is success
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  tags:
+    - repositories
+    - base
+    - deb822
+- name: Add custom repositories as deb822 format
+  ansible.builtin.deb822_repository:
+    name: "{{ item.name }}"
+    types: "{{ item.types | default('deb') }}"
+    suites: "{{ item.suites | default('/') }}"
+    components: "{{ item.components | default(' ') }}"
+    uris: "{{ item.uris }}"
+    enabled: "{{ item.enabled | default('true') }}"
+    signed_by: "{{ item.signed_by | default('null') }}"
+    architectures: "{{ item.architectures | default('') }}"
+  register: r_custom_repositories
+  until: r_custom_repositories is success
+  loop: "{{ custom_repositories }}"
+  when: custom_repositories is defined and custom_repositories | length > 0
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  tags:
+    - repositories
+    - base
+    - deb822
+    - custom
+- name: Add optional repositories as deb822 format
+  ansible.builtin.deb822_repository:
+    name: "{{ item.name }}"
+    types: "{{ item.types | default('deb') }}"
+    suites: "{{ item.suites | default('/') }}"
+    components: "{{ item.components | default(' ') }}"
+    uris: "{{ item.uris }}"
+    enabled: "{{ item.enabled | default('true') }}"
+    signed_by: "{{ item.signed_by | default('null') }}"
+    architectures: "{{ item.architectures | default('') }}"
+  loop: "{{ pld_deb822_repositories_optional }}"
+  register: r_optional_repositories
+  until: r_optional_repositories is success
+  when: pld_deb822_repositories_optional is defined and pld_deb822_repositories_optional | length > 0
+  tags:
+    - repositories
+    - base
+    - deb822
+# restart apt cache
+- name: After install apt refresh
+  ansible.builtin.apt:
+    update_cache: true
+    force: true
+  ignore_errors: true
+  any_errors_fatal: false
+  changed_when: false
+  register: r_apt_after_repos_refresh
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_apt_after_repos_refresh is success
+  tags:
+    - packages
+    - base
+# make sure all dpkg are already configured
+- name: Reconfigure all waiting packages
+  ansible.builtin.shell: dpkg --configure -a
+  any_errors_fatal: false
+  register: r_reconfigure_all_waiting_packages
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_reconfigure_all_waiting_packages is success
+  failed_when: false
+  changed_when: false
+  tags:
+    - packages
+    - base
+# clean cache in case of initial apt failure
+- name: Clean apt cache
+  ansible.builtin.shell: apt clean all -y
+  any_errors_fatal: false
+  register: r_apt_clean
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_apt_clean is success
+  when: r_apt_initial_refresh.failed
+  changed_when: r_apt_clean.rc != 0
+  tags:
+    - packages
+    - base

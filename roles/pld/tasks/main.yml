@@ -1,0 +1,178 @@
+- name: Include shared variables
+  ansible.builtin.include_vars: "{{ role_path }}/vars/shared.yml"
+
+- name: Include OS-specific variables
+  ansible.builtin.include_vars: "{{ role_path }}/vars/{{ ansible_distribution }}.yml"
+
+- name: Run pre-tasks assert tasks
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/pre_tasks.yml"
+  tags:
+    - assert
+    - pre_tasks
+
+- name: Run initial steps
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/initial_steps.yml"
+  tags:
+    - initial_steps
+
+- name: Remove obsolete packages, repos and keys
+  ansible.builtin.include_tasks: remove_obsolete.yml
+  tags:
+    - base
+    - packages
+    - obsolete
+    - keys
+    - repositories
+- name: Remove obsoleted repository files
+  ansible.builtin.include_tasks: ./tasks/remove_repository_files.yml
+  loop: "{{ pld_files_remove | default([]) }}"
+  args:
+    apply:
+      tags:
+        - repositories
+        - files
+        - remove
+        - base
+        - obsolete
+  tags:
+    - always
+- name: Install keys and repositories
+  ansible.builtin.include_tasks: install_keys_and_repos.yml
+
+- name: Install packages
+  ansible.builtin.include_tasks: install_packages.yml
+
+- name: Install pip packages
+  ansible.builtin.include_tasks: install_pip.yml
+  when: pld_pip is defined and pld_pip | length > 0
+  tags:
+    - base
+    - python
+    - packages
+
+- name: Install npm packages
+  ansible.builtin.include_tasks: install_npm.yml
+  when: (pld_npm is defined and pld_npm | length > 0) and pld_install_npm is defined and pld_install_npm
+  tags:
+    - base
+    - npm
+    - packages
+
+# Download 3-rd party software and unarchive  it (flatten archive folder tree) to `pld_bin_path` setting +x
+- name: Download regular pld_files
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/download_files.yml"
+  loop: "{{ pld_files }}"
+  when: pld_files is defined and pld_files | length > 0
+  args:
+    apply:
+      tags:
+        - downloads
+        - apps
+        - tasks
+
+- name: Download and unpack 3rd-party files files from `downloads` list
+  ansible.builtin.include_tasks: download_files_unpack.yml
+  loop: "{{ pld_downloads }}"
+  when: pld_downloads is defined and pld_downloads | length > 0
+  args:
+    apply:
+      tags:
+        - downloads
+        - apps
+        - tasks
+
+- name: Download and unpack and flatten 3rd-party files files from `unpack` list
+  ansible.builtin.include_tasks: download_files_flatten.yml
+  loop: "{{ pld_unpack }}"
+  when: pld_unpack is defined and pld_unpack | length > 0
+  args:
+    apply:
+      tags:
+        - downloads
+        - apps
+        - tasks
+
+- name: Configure the OS settings
+  ansible.builtin.include_tasks: configure_os.yml
+
+- name: Configure zsh
+  ansible.builtin.include_tasks: configure_zsh.yml
+  when: pld_install_zsh is defined and pld_install_zsh
+  tags:
+    - base
+    - user
+    - zsh
+
+- name: Install Yubico software
+  ansible.builtin.include_tasks: install_yubico_software.yml
+  when: pld_install_yubico is defined and pld_install_yubico
+  tags:
+    - base
+    - user
+    - yubico
+
+- name: Configure Ansible settings
+  ansible.builtin.include_tasks: configure_ansible.yml
+  when: pld_config_ansible is defined and pld_config_ansible
+  tags:
+    - base
+    - user
+    - ansible
+
+- name: User modifications
+  ansible.builtin.include_tasks: user_modifications.yml
+
+- name: Configure steampipe plugins
+  ansible.builtin.include_tasks: install_steampipe_plugins.yml
+  when: pld_install_steampipe_plugins is defined and pld_install_steampipe_plugins
+  loop: "{{ pld_steampipe.plugins }}"
+  tags:
+    - base
+    - steampipe
+    - plugins
+
+- name: Configure neofetch
+  ansible.builtin.include_tasks: configure_neofetch.yml
+  when: pld_config_neofetch is defined and pld_config_neofetch
+  args:
+    apply:
+      tags:
+        - base
+        - neofetch
+  vars:
+    ansible_become: true
+    ansible_become_user: "{{ pld_active_user }}"
+  tags:
+    - always
+
+- name: Configure vscode extensions
+  ansible.builtin.include_tasks: install_vscode_extensions.yml
+  when: (pld_install_vscode_extensions is defined and pld_install_vscode_extensions) and ('steampipe' in ansible_facts.packages)
+  args:
+    apply:
+      tags:
+        - base
+        - vscode
+        - extensions
+  vars:
+    ansible_become: true
+    ansible_become_user: "{{ pld_active_user }}"
+  tags:
+    - always
+- name: Remove obsoleted repository files
+  ansible.builtin.include_tasks: ./tasks/remove_repository_files.yml
+  loop: "{{ files_remove | default([]) }}"
+  args:
+    apply:
+      tags:
+        - repositories
+        - files
+        - remove
+        - base
+        - obsolete
+  tags:
+    - always
+- name: Update and reboot
+  ansible.builtin.include_tasks: update_and_reboot.yml
+  tags:
+    - always

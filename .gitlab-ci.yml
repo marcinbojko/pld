@@ -1,0 +1,26 @@
+stages:
+  - ansible-lint
+ansible-lint:
+  stage: ansible-lint
+  image: $PIPELINE_IMAGE:$PIPELINE_IMAGE_TAG
+  retry: 2
+  before_script:
+    - yamllint --version
+    - ansible-lint --version
+  script:
+    - echo "Running on $PIPELINE_IMAGE:$PIPELINE_IMAGE_TAG"
+#    - pip install --upgrade ansible-lint pip
+    - ansible-lint ./roles/pld/defaults/*.yml
+    - ansible-lint ./roles/pld/handlers/*.yml
+    - ansible-lint ./roles/pld/tasks/*.yml
+#    - ansible-lint ./roles/pld/templates/*.yml
+    - ansible-lint ./roles/pld/vars/*.yml
+    - echo "Run for ansible-lint production"
+    - ansible-lint --profile production ./roles/pld/defaults/*.yml
+    - ansible-lint --profile production ./roles/pld/handlers/*.yml
+    - ansible-lint --profile production ./roles/pld/tasks/*.yml
+#    - ansible-lint --profile production ./roles/pld/templates/*.yml
+    - ansible-lint --profile production ./roles/pld/vars/*.yml
+  tags:
+    - docker
+    - ansible

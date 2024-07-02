@@ -1,0 +1,111 @@
+# Install essentials - packages needed for repos or other packages. Mostly OS-related
+- name: Install essential packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: "{{ pld_install_state }}"
+    update_cache: false
+  loop: "{{ pld_packages_essential }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: packages_essential
+  until: packages_essential is success
+  any_errors_fatal: false
+  tags:
+    - packages
+    - base
+# Install basic packages
+- name: Install basic packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: "{{ pld_install_state }}"
+    update_cache: false
+  loop: "{{ pld_packages }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_packages
+  until: r_packages is success
+  any_errors_fatal: false
+  failed_when: false
+  tags:
+    - packages
+    - base
+- name: Install custom packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: "{{ pld_install_state }}"
+    update_cache: false
+  loop: "{{ custom_packages | default([]) }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_custom_packages
+  until: r_custom_packages is success
+  any_errors_fatal: false
+  failed_when: false
+  tags:
+    - packages
+    - base
+    - custom
+# Install flatpak packages
+- name: Install flatpak apps
+  community.general.flatpak:
+    name: "{{ item.name | string }}"
+    state: present
+    method: system
+  loop: "{{ pld_flatpak }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_install_flatpak
+  until: r_install_flatpak is success
+  any_errors_fatal: false
+  failed_when: false
+  when: pld_install_flatpak is defined and pld_install_flatpak
+  tags:
+    - packages
+    - flatpak
+# Upgrade flatpak apps
+- name: Upgrade flatpak apps
+  ansible.builtin.command: flatpak update -y
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_update_flatpak
+  until: r_update_flatpak is success
+  changed_when: r_update_flatpak.rc != 0
+  ignore_errors: true
+  when: pld_install_flatpak is defined and pld_install_flatpak
+  tags:
+    - packages
+    - flatpak
+# Install optional packages - if variable `pld_install_optional` is set to true
+- name: Install optional packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: "{{ pld_install_state }}"
+    update_cache: false
+  loop: "{{ pld_packages_optional }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: pld_packages_optional
+  until: pld_packages_optional is success
+  when: pld_install_optional is defined and pld_install_optional
+  any_errors_fatal: false
+  tags:
+    - packages
+    - optional
+# Install 3-rd party software not available in repos
+- name: Install extra .deb packages from variables file
+  ansible.builtin.apt:
+    deb: "{{ item }}"
+    state: present
+    update_cache: false
+    only_upgrade: true
+  loop: "{{ pld_deb }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_apt_deb
+  until: r_apt_deb is success
+  any_errors_fatal: false
+  ignore_errors: true
+  when: pld_install_deb is defined and pld_install_deb
+  tags:
+    - packages
+    - deb

@@ -1,0 +1,131 @@
+# Task to download oh-my-zsh and power10k theme
+# you need manually configure both
+- name: Create folder for fonts
+  ansible.builtin.file:
+    path: /usr/local/share/truetype
+    state: directory
+    mode: "0644"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_create_folder_for_fonts
+  until: r_create_folder_for_fonts is success
+  tags:
+    - zsh
+    - power10k
+    - fonts
+  any_errors_fatal: false
+  ignore_errors: true
+- name: Download fonts for power10k
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    dest: "/usr/share/fonts/truetype/{{ item | basename | replace('%20', ' ') }}"
+    mode: "0644"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_download_fonts
+  loop:
+    - "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
+    - "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
+    - "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf"
+    - "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf"
+  until: r_download_fonts is success
+  when: r_create_folder_for_fonts is defined and r_create_folder_for_fonts is success
+  any_errors_fatal: false
+  ignore_errors: true
+  tags:
+    - zsh
+    - power10k
+    - fonts
+- name: Update font cache
+  ansible.builtin.shell: fc-cache -f -v
+  register: r_update_font_cache
+  any_errors_fatal: false
+  tags:
+    - zsh
+    - power10k
+    - fonts
+  changed_when: false
+  failed_when: r_update_font_cache.rc != 0 and r_update_font_cache.stderr != ""
+- name: Make sure zsh is installed
+  ansible.builtin.apt:
+    name: zsh
+    state: present
+    update_cache: true
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_make_sure_zsh_is_installed
+  until: r_make_sure_zsh_is_installed is success
+  any_errors_fatal: true
+  ignore_errors: false
+- name: Create or check users groups for zsh
+  ansible.builtin.user:
+    name: "{{ pld_active_user }}"
+    state: present
+  any_errors_fatal: false
+  register: r_pld_active_user_account
+  until: r_pld_active_user_account is success
+  tags:
+    - base
+    - user
+- name: Check_if_oh_my_zsh_exists
+  ansible.builtin.stat:
+    path: "{{ active_user_homedir }}/.oh-my-zsh"
+  register: r_stat_check_if_oh_my_zsh
+- name: Check_if_power10k_exists
+  ansible.builtin.stat:
+    path: "{{ active_user_homedir }}/.oh-my-zsh/custom/themes/powerlevel10k"
+  register: r_stat_check_if_power10k
+- name: Clone_oh-my-zsh
+  ansible.builtin.git:
+    repo: https://github.com/robbyrussell/oh-my-zsh
+    dest: "{{ active_user_homedir }}/.oh-my-zsh"
+  when: (active_user_homedir is defined and active_user_homedir|length >0) and (not r_stat_check_if_oh_my_zsh.stat.exists)
+  become_user: "{{ pld_active_user }}"
+  become: true
+  register: r_clone_oh_my_zsh
+  until: r_clone_oh_my_zsh is success
+- name: Clone_power10k
+  ansible.builtin.git:
+    repo: https://github.com/romkatv/powerlevel10k.git
+    dest: "{{ active_user_homedir }}/.oh-my-zsh/custom/themes/powerlevel10k"
+    depth: "1"
+  become_user: "{{ pld_active_user }}"
+  become: true
+  register: r_clone_power10k
+  until: r_clone_power10k is success
+  when: (r_clone_oh_my_zsh is defined and r_clone_oh_my_zsh is success) and (not r_stat_check_if_power10k.stat.exists)
+- name: Change user's default shell
+  ansible.builtin.user:
+    name: "{{ pld_active_user }}"
+    shell: /bin/zsh
+  become_user: root
+  become: true
+  register: r_change_user_shell
+  until: r_change_user_shell is success
+  tags:
+    - zsh
+    - user
+  any_errors_fatal: true
+  ignore_errors: false
+- name: Check if .zshrc exists
+  ansible.builtin.stat:
+    path: "{{ active_user_homedir }}/.zshrc"
+  register: r_stat_check_if_zshrc
+- name: Copy .zshrc from template in case if it doesn't exist
+  ansible.builtin.copy:
+    src: "{{ active_user_homedir }}/.oh-my-zsh/templates/zshrc.zsh-template"
+    dest: "{{ active_user_homedir }}/.zshrc"
+    owner: "{{ pld_active_user }}"
+    group: "{{ pld_active_user }}"
+    mode: "0644"
+    remote_src: true
+  when: (r_stat_check_if_zshrc is defined) and (not r_stat_check_if_zshrc.stat.exists)
+  become_user: "{{ pld_active_user }}"
+  become: true
+  register: r_copy_zshrc
+  until: r_copy_zshrc is success
+  tags:
+    - zsh
+    - user
+  any_errors_fatal: true
+  ignore_errors: false

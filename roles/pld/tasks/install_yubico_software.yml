@@ -1,0 +1,82 @@
+- name: Remove old repository
+  ansible.builtin.apt_repository:
+    repo: "{{ item.repo }}"
+    state: absent
+    update_cache: false
+  loop: "{{ pld_yubico_repositories }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_remove_yubico_repositories
+  until: r_remove_yubico_repositories is success
+  any_errors_fatal: false
+  tags:
+    - repositories
+    - task
+    - yubico
+    - obsoleted
+- name: Remove repository file if exists
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item.filename }}.list"
+    state: absent
+  loop: "{{ pld_yubico_repositories }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_remove_yubico_repository_files
+  until: r_remove_yubico_repository_files is success
+  any_errors_fatal: false
+  tags:
+    - repositories
+    - task
+    - yubico
+    - obsoleted
+- name: Add Yubico repository in deb822 format
+  ansible.builtin.deb822_repository:
+    name: "{{ item.name }}"
+    types: "{{ item.types | default('deb') }}"
+    suites: "{{ item.suites | default('/') }}"
+    components: "{{ item.components | default(' ') }}"
+    uris: "{{ item.uris }}"
+    enabled: "{{ item.enabled | default('true') }}"
+    signed_by: "{{ item.signed_by | default('null') }}"
+    architectures: "{{ item.architectures | default('') }}"
+  loop: "{{ pld_yubico_repositories }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_yubico_repositories
+  until: r_yubico_repositories is success
+  any_errors_fatal: false
+  tags:
+    - repositories
+    - task
+    - yubico
+- name: Install yubico packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: "{{ pld_install_state }}"
+    update_cache: false
+  loop: "{{ pld_yubico_packages }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_yubico_packages
+  until: r_yubico_packages is success
+  when: r_yubico_repositories is success
+  any_errors_fatal: false
+  tags:
+    - packages
+    - task
+    - yubico
+- name: Install Yubico Authenticator as Flatpak
+  community.general.flatpak:
+    name: "{{ item.name }}"
+    state: "{{ item.ref }}"
+  loop: "{{ pld_yubico_flatpak }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_yubico_flatpak
+  until: r_yubico_flatpak is success
+  when: r_yubico_repositories is success
+  any_errors_fatal: false
+  tags:
+    - flatpak
+    - task
+    - yubico

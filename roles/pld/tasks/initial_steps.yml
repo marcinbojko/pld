@@ -1,0 +1,46 @@
+# Tasks for initial steps - time sync, remove obsolete repositories, files, keys, packages
+- name: Make sure timesyncd is installed
+  ansible.builtin.apt:
+    name: systemd-timesyncd
+    state: present
+    update_cache: false
+    allow_unauthenticated: true
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_systemd_timesyncd
+  until: r_systemd_timesyncd is success
+  any_errors_fatal: true
+  tags:
+    - packages
+    - base
+
+- name: Start timesyncd service
+  ansible.builtin.systemd:
+    name: systemd-timesyncd
+    state: started
+    enabled: true
+  changed_when: false
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_start_timesyncd
+  until: r_start_timesyncd is success
+  tags:
+    - base
+
+- name: Start timedatectl set ntp
+  ansible.builtin.shell: timedatectl set-ntp on
+  tags:
+    - base
+  changed_when: false
+
+- name: Display home directory of a specific user
+  ansible.builtin.debug:
+    msg: "The home directory of {{ pld_active_user }} is {{ ansible_facts.getent_passwd[pld_active_user][4] }}"
+  when: pld_active_user in ansible_facts.getent_passwd
+
+- name: Fact_for_user_home_dir
+  ansible.builtin.set_fact:
+    "active_user_homedir": "{{ ansible_facts.getent_passwd[pld_active_user][4] }}"
+  tags:
+    - base
+    - user

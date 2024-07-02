@@ -1,0 +1,30 @@
+# start vscode extensions block
+- name: Install vscode extensions
+  tags:
+    - optional
+    - user
+    - vscode
+    - extensions
+  when: pld_install_vscode_extensions is defined and pld_install_vscode_extensions
+  block:
+    - name: Remove obsolete vscode extensions
+      ansible.builtin.shell: "code --uninstall-extension {{ item }} | true"
+      any_errors_fatal: false
+      ignore_errors: true
+      loop: "{{ pld_vscode_obsolete }}"
+      become: true
+      become_user: "{{ pld_active_user }}"
+      register: r_remove_obsolete_extensions
+      changed_when: "'was successfully uninstalled!' in r_remove_obsolete_extensions.stdout"
+    - name: Install_missing_extensions
+      ansible.builtin.shell: if [ ! $(code --list-extensions | grep {{ item }}) ]; then code --install-extension {{ item }} --force; fi
+      loop: "{{ pld_vscode }}"
+      register: r_install_extension
+      retries: "{{ pld_retries_count }}"
+      delay: "{{ pld_delay_time }}"
+      until: r_install_extension is success
+      become: true
+      become_user: "{{ pld_active_user }}"
+      changed_when: r_install_extension.stdout | length > 0
+      any_errors_fatal: false
+      ignore_errors: true

@@ -1,0 +1,123 @@
+# User-related tasks
+- name: Create_or_check_users_groups
+  ansible.builtin.user:
+    name: "{{ pld_active_user }}"
+    groups:
+      - root
+      - vboxusers
+      - docker
+      - adm
+      - sudo
+      - video
+      - cdrom
+      - plugdev
+      - dialout
+    state: present
+    append: true
+  any_errors_fatal: false
+  register: r_active_user_account
+  until: r_active_user_account is success
+  tags:
+    - base
+    - user
+- name: Make_sure_autostart_folder_exists
+  ansible.builtin.file:
+    path: "{{ active_user_homedir }}/.config/autostart"
+    state: directory
+    owner: "{{ pld_active_user }}"
+    group: "{{ pld_active_user }}"
+    mode: '0755'
+  register: r_create_autostart
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_create_autostart is success
+  any_errors_fatal: true
+  tags:
+    - base
+    - user
+
+- name: Create_startup_applications
+  ansible.builtin.copy:
+    dest: "{{ active_user_homedir }}/.config/autostart/{{ item.filename }}"
+    src: "{{ item.source }}"
+    owner: "{{ pld_active_user }}"
+    group: "{{ pld_active_user }}"
+    mode: '0644'
+    force: false
+  loop: "{{ pld_startup }}"
+  any_errors_fatal: false
+  register: r_create_startup_applications
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_create_startup_applications is success
+  when: pld_config_autostart is defined and pld_config_autostart
+
+- name: Make sure local bin folder exists
+  ansible.builtin.file:
+    path: "{{ active_user_homedir }}/.local/bin"
+    state: directory
+    owner: "{{ pld_active_user }}"
+    group: "{{ pld_active_user }}"
+    mode: '0755'
+  register: r_create_local_bin
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_create_local_bin is success
+  any_errors_fatal: false
+  tags:
+    - base
+    - user
+- name: Add directory to PATH in Bash
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: 'export PATH=$PATH:/usr/local/bin'
+    create: true
+    mode: '0644'
+    state: present
+    regexp: '^export PATH=.*:/usr/local/bin.*$'
+    backrefs: true
+  become: false
+  failed_when: false
+  any_errors_fatal: false
+- name: Add directory to PATH in Zsh
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    line: 'export PATH=$PATH:/usr/local/bin'
+    create: true
+    state: present
+    mode: '0644'
+    regexp: '^export PATH=.*:/usr/local/bin.*$'
+    backrefs: true
+  become: false
+  failed_when: false
+  any_errors_fatal: false
+- name: Add directory to PATH in Fish
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.config/fish/config.fish"
+    line: 'set -gx PATH $PATH /usr/local/bin'
+    create: true
+    state: present
+    mode: '0644'
+    regexp: '^set -gx PATH .* /usr/local/bin.*$'
+    backrefs: true
+  become: false
+  failed_when: false
+  any_errors_fatal: false
+
+- name: Create autostart items for files requiring templating
+  ansible.builtin.template:
+    src: "{{ item.source }}"
+    dest: "{{ active_user_homedir }}/.config/autostart/{{ item.dest }}"
+    owner: "{{ pld_active_user }}"
+    group: "{{ pld_active_user }}"
+    mode: '0644'
+  loop: "{{ pld_startup_templates }}"
+  any_errors_fatal: false
+  register: r_create_autostart_items
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_create_autostart_items is success
+  when: pld_config_autostart is defined and pld_config_autostart
+  tags:
+    - base
+    - user

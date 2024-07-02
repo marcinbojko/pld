@@ -1,0 +1,26 @@
+- name: Check if ansible.cfg exists
+  ansible.builtin.stat:
+    path: "{{ pld_ansible.cfg }}"
+  register: r_check_if_ansible_cfg_exists
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_check_if_ansible_cfg_exists is success
+- name: Set fact if ansible.cfg exists
+  ansible.builtin.set_fact:
+    ansible_exists: "{{ r_check_if_ansible_cfg_exists.stat.exists }}"
+  when: r_check_if_ansible_cfg_exists is success
+- name: Change ansible options
+  community.general.ini_file:
+    path: "{{ pld_ansible.cfg }}"
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value | string }}"
+    state: "{{ item.state | string }}"
+    mode: '0644'
+    backup: true
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  loop: "{{ pld_ansible.config }}"
+  register: r_change_ansible_options
+  until: r_change_ansible_options is success
+  when: ansible_exists

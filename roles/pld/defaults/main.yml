@@ -1,0 +1,24 @@
+---
+# set of main variables for prepare_linux_desktop role
+
+pld_active_user: "{{ ansible_ssh_user }}"
+pld_bin_path: /usr/local/bin
+pld_config_ansible: true
+pld_config_autostart: true
+pld_config_dconf: true
+pld_config_neofetch: true
+pld_config_sysctl: true
+pld_delay_time: 1
+pld_install_deb: true
+pld_install_flatpak: true
+pld_install_npm: true
+pld_install_optional: true
+pld_install_state: latest
+pld_install_steampipe_plugins: true
+pld_install_vscode_extensions: true
+pld_install_yubico: false
+pld_install_zsh: true
+pld_reboot_required: false
+pld_remove_flatpak: true
+pld_retries_count: 1
+pld_unpack_folder: /tmp/linux_mint

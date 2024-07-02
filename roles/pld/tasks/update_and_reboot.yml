@@ -1,0 +1,40 @@
+---
+- name: Update all packages
+  ansible.builtin.apt:
+    upgrade: true
+    update_cache: true
+    autoclean: true
+  register: r_apt_upgrade
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_apt_upgrade is success
+  tags:
+    - base
+    - apt
+  failed_when: false
+  any_errors_fatal: false
+- name: Reboot_after_changes
+  ansible.builtin.reboot:
+    pre_reboot_delay: 15
+    post_reboot_delay: 15
+    msg: "Initial reboot"
+  when: (pld_reboot_required is defined and pld_reboot_required) or (r_apt_upgrade.changed) or (r_apt_upgrade.failed)
+  register: r_reboot_after_upgrade
+  any_errors_fatal: false
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  until: r_reboot_after_upgrade is success
+  tags:
+    - base
+    - os
+- name: Clean_apt_cache
+  ansible.builtin.shell: apt clean all -y
+  any_errors_fatal: false
+  register: r_clean_apt_cache
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  changed_when: false
+  tags:
+    - base
+    - os
+    - apt

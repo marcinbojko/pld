@@ -1,0 +1,34 @@
+# Download 3-rd party software and unarchive it to `pld_bin_path` setting +x
+- name: Check if `pld_bin_path`_exists
+  ansible.builtin.file:
+    path: "{{ pld_bin_path }}"
+    state: directory
+    mode: '0755'
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  changed_when: false
+  tags:
+    - base
+    - downloads
+    - apps
+- name: "Download_and_unarchive: {{ item.destination }}"
+  ansible.builtin.unarchive:
+    src: "{{ item.url }}"
+    dest: "{{ pld_bin_path }}"
+    keep_newer: true
+    list_files: true
+    mode: +x
+    remote_src: true
+    exclude:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_unarchive
+  until: r_unarchive is success
+  failed_when: r_unarchive.files is not defined or r_unarchive.files | reject("equalto", "") | list | length == 0
+  tags:
+    - base
+    - downloads
+    - apps

@@ -1,0 +1,8 @@
+- name: Prepare Linux Desktop/Laptop Environment for Mint and ZorinOS
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - role: pld
+      vars:
+        pld_active_user: "{{ ansible_ssh_user }}"

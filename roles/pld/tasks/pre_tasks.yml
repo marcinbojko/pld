@@ -1,0 +1,81 @@
+- name: Verify ansible meets version requirements
+  ansible.builtin.assert:
+    that: "ansible_version.full is version('2.10', '>=')"
+    msg: "You must update Ansible to at least 2.10 to use this version of the playbook"
+  tags:
+    - assert
+    - pre_tasks
+
+- name: Run initial setup instead of gather facts
+  ansible.builtin.setup:
+    gather_timeout: 60
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_setup_status
+  until: r_setup_status is success
+  tags:
+    - assert
+    - pre_tasks
+
+- name: Assert root partition has at least 10GB of free_space
+  ansible.builtin.assert:
+    that: item.size_available > 1073741824
+  loop: '{{ ansible_mounts }}'
+  ignore_errors: false
+  when: item.mount == '/'
+  tags:
+    - assert
+    - pre_tasks
+
+- name: Assert active user have been defined and has value
+  ansible.builtin.assert:
+    that: pld_active_user is defined and pld_active_user | length > 0
+    msg: "Specify user in group_vars or passed in variable pld_active_user"
+  tags:
+    - assert
+    - pre_tasks
+
+- name: Check if a specific user exists
+  ansible.builtin.getent:
+    database: passwd
+
+- name: Assert that a specific user exists
+  ansible.builtin.assert:
+    that: pld_active_user in getent_passwd
+    success_msg: "User {{ pld_active_user }} exists."
+    fail_msg: "User {{ pld_active_user }} does not exist."
+
+- name: Assert supported Linux Mint or Zorin OS
+  ansible.builtin.assert:
+    that:
+      - "(ansible_distribution == 'Linux Mint' and ansible_distribution_major_version is version('21', '>=')) or (ansible_distribution == 'Zorin OS' and ansible_distribution_major_version is version('17', '>='))"
+    msg: "Unsupported distribution found: {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
+  tags:
+    - assert
+
+- name: Display basic information
+  ansible.builtin.debug:
+    msg:
+      - "Linux OS major version       : {{ ansible_distribution_major_version }}"
+      - "Linux OS version             : {{ ansible_distribution_version }}"
+      - "Linux OS release codename    : {{ ansible_distribution_release }}"
+      - "Ansible version              : {{ ansible_version.full }}"
+      - "Install optional packages    : {{ pld_install_optional | bool | lower }}"
+      - "Install deb packages         : {{ pld_install_deb | bool | lower }}"
+      - "Install Flatpak packages     : {{ pld_install_flatpak | bool | lower }}"
+      - "Install NPM packages         : {{ pld_install_npm | bool | lower }}"
+      - "Install vscode extensions    : {{ pld_install_vscode_extensions | bool | lower }}"
+      - "Install steampipe plugins    : {{ pld_install_steampipe_plugins | bool | lower }}"
+      - "Install zsh                  : {{ pld_install_zsh | bool | lower }}"
+      - "Install Yubico               : {{ pld_install_yubico | bool | lower }}"
+      - "Config for Ansible           : {{ pld_config_ansible | bool | lower }}"
+      - "Config dconf                 : {{ pld_config_dconf | bool | lower }}"
+      - "Config sysctl                : {{ pld_config_sysctl | bool | lower }}"
+      - "Config autostart             : {{ pld_config_autostart | bool | lower }}"
+      - "Bin Path to put files into   : {{ pld_bin_path }}"
+      - "Active user                  : {{ pld_active_user | string }}"
+
+- name: Wait after displaying summary
+  ansible.builtin.pause:
+    seconds: 10
+    prompt: "Check variables - last chance to abort in 10 seconds"

@@ -1,0 +1,19 @@
+- name: Install and upgrade pld_pip packages
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    extra_args: --upgrade --upgrade-strategy=only-if-needed --user
+    executable: "{{ pld_pip_executable }}"
+  loop: "{{ pld_pip }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_pip
+  until: r_pip is success
+  any_errors_fatal: false
+  failed_when: false
+  become: true
+  become_user: "{{ pld_active_user }}"
+  when: pld_pip_executable is defined
+  tags:
+    - packages
+    - base
+    - python

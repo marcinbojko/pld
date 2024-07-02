@@ -1,0 +1,66 @@
+- name: "Empty unpack: {{ item.destination }}"
+  ansible.builtin.file:
+    path: "{{ folder_item }}"
+    state: absent
+  loop:
+    - "{{ pld_unpack_folder }}/unpack"
+  changed_when: false
+  loop_control:
+    loop_var: folder_item
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_task_empty_unpack
+  until: r_task_empty_unpack is defined and r_task_empty_unpack is success
+- name: "Create folder structure: {{ item.destination }}"
+  ansible.builtin.file:
+    path: "{{ folder_item }}"
+    state: directory
+    mode: "0644"
+  loop:
+    - "{{ pld_unpack_folder }}/downloads"
+    - "{{ pld_unpack_folder }}/unpack"
+  loop_control:
+    loop_var: folder_item
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_task_create_folder_structure
+  until: r_task_create_folder_structure is defined and r_task_create_folder_structure is success
+  changed_when: false
+- name: "Download files: {{ item.destination }}"
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ pld_unpack_folder }}/downloads/{{ item.destination_file }}"
+    mode: "0644"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_task_download_files
+  until: r_task_download_files is defined and r_task_download_files is success
+  when: r_task_create_folder_structure is defined and r_task_create_folder_structure is success
+  changed_when: false
+- name: "Unpack_files: {{ item.destination }}"
+  ansible.builtin.unarchive:
+    src: "{{ pld_unpack_folder }}/downloads/{{ item.destination_file }}"
+    dest: "{{ pld_unpack_folder }}/unpack/"
+    keep_newer: true
+    list_files: true
+    mode: +x
+    remote_src: true
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_task_unpack_files
+  until: r_task_unpack_files is defined and r_task_unpack_files is success
+  when: r_task_download_files is defined and r_task_download_files is success
+  changed_when: false
+- name: "Copy files: {{ item.destination }}"
+  ansible.builtin.copy:
+    src: "{{ pld_unpack_folder }}/unpack/{{ item.folder }}/{{ item.source }}"
+    dest: "{{ pld_bin_path }}/{{ item.destination }}"
+    remote_src: true
+    mode: +x
+  become_user: root
+  become: true
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_task_copy_files
+  until: r_task_copy_files is success
+  when: r_task_unpack_files is defined and r_task_unpack_files is success
