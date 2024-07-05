@@ -4,8 +4,6 @@
 [![Ansible Lint](https://github.com/marcinbojko/pld/actions/workflows/02_ansible_lint.yml/badge.svg)](https://github.com/marcinbojko/pld/actions/workflows/02_ansible_lint.yml)
 <!-- TOC -->
 
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/marcinbojko)
-
 - [Ansible role for your DevOps/SysOps Linux Mint 21.x/Zorin OS based workstation](#ansible-role-for-your-devopssysops-linux-mint-21xzorin-os-based-workstation)
   - [Description](#description)
   - [Prerequisites](#prerequisites)
@@ -42,7 +40,9 @@
 <!-- /TOC -->
 ## Description
 
-This role is designed to configure your Linux Mint 21.x or Zorin OS 17.x workstation. It will install essential packages, main packages, extra/optional packages, 3rd party software, and configure your system. It will also install extra binaries in `/usr/local/bin` folder. It will also change startup settings for a specific user (that's why you should not run this as root). It will also change `ansible.cfg`, `dconf` settings, and `sysctl` system settings.
+This role is designed to configure your Linux Mint 21.x or Zorin OS 17.x workstation. It will install essential packages, main packages, extra/optional packages, 3rd party software, and configure your system. It will also install extra binaries in `/usr/local/bin` folder.
+
+It will also change startup settings for a specific user (that's why you should not run this as root). It will also change `ansible.cfg`, `dconf` settings, and `sysctl` system settings.
 
 It's an extension od my previous project - [https://github.com/marcinbojko/linux_mint](https://github.com/marcinbojko/linux_mint) which won't be updated anymore.
 
