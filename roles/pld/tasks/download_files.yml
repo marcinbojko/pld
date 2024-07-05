@@ -1,5 +1,5 @@
 # Download 3-rd party software to `pld_bin_path` setting +x
-- name: Download_regular_files
+- name: "Download_regular_files: {{ item.destination }}"
   ansible.builtin.get_url:
     url: "{{ item.url }}"
     dest: "{{ pld_bin_path }}/{{ item.destination }}"
@@ -23,6 +23,8 @@
     mode: '0644'
   when: item.desktop_file is defined and item.desktop_file | length > 0
   any_errors_fatal: false
+  become: true
+  become_user: root
   register: r_put_desktop_files
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"

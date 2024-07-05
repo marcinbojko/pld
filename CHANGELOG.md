@@ -1,5 +1,12 @@
 # Changelog "prepare_linux_desktop" ansible role
 
+## Version 1.0.2 [2024-07-05]
+
+* fixed `teller` package being inproperly unarchived
+* fixed missing owner on unarchived files (assigned to root instead of `pld_active_user`)
+* [VSCODE] removed `infracost.infracost` from extensions list
+* [DEB] upgraded `insync` to version 3.9.2.60014ś
+
 ## Version 1.0.1 [2024-07-05]
 
 * [DEB] added `duf` [https://github.com/muesli/duf](https://github.com/muesli/duf)

@@ -27,6 +27,7 @@
   delay: "{{ pld_delay_time }}"
   register: r_unarchive
   until: r_unarchive is success
+  become: false
   failed_when: r_unarchive.files is not defined or r_unarchive.files | reject("equalto", "") | list | length == 0
   tags:
     - base

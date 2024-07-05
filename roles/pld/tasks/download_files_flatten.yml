@@ -57,8 +57,7 @@
     dest: "{{ pld_bin_path }}/{{ item.destination }}"
     remote_src: true
     mode: +x
-  become_user: root
-  become: true
+    owner: "{{ pld_active_user }}"
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"
   register: r_task_copy_files

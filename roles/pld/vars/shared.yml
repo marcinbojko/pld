@@ -535,7 +535,7 @@ pld_deb:
   - https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin_18.2.0_amd64.deb
   - https://github.com/zyedidia/micro/releases/download/v2.0.13/micro-2.0.13-amd64.deb
   - https://github.com/sharkdp/bat/releases/download/v0.24.0/bat_0.24.0_amd64.deb
-  - https://cdn.insynchq.com/builds/linux/3.9.1.60010/insync_3.9.1.60010-jammy_amd64.deb
+  - https://cdn.insynchq.com/builds/linux/3.9.2.60014/insync_3.9.2.60014-jammy_amd64.deb
   - https://github.com/muesli/duf/releases/download/v0.8.1/duf_0.8.1_linux_amd64.deb
 pld_flatpak:
   - name: com.bitwarden.desktop
@@ -656,6 +656,11 @@ pld_unpack:
     source: eza
     destination_file: eza_x86_64-unknown-linux-gnu.tar.gz
     folder:
+  - url: https://github.com/tellerops/teller/releases/download/v2.0.7/teller-x86_64-linux.tar.xz
+    destination: teller
+    source: teller
+    destination_file: teller-x86_64-linux.tar.xz
+    folder: teller-x86_64-linux
 pld_downloads:
   - url: https://github.com/ffuf/ffuf/releases/download/v2.1.0/ffuf_2.1.0_linux_amd64.tar.gz
     destination: ffuf
@@ -665,9 +670,6 @@ pld_downloads:
     skip_tree: false
   - url: https://github.com/orf/gping/releases/download/gping-v1.16.1/gping-Linux-x86_64.tar.gz
     destination: gping
-    skip_tree: false
-  - url: https://github.com/tellerops/teller/releases/download/v2.0.7/teller-x86_64-linux.tar.xz
-    destination: teller
     skip_tree: false
 pld_files:
   - url: https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-linux-amd64
@@ -740,6 +742,7 @@ pld_vscode_obsolete:
   - wholroyd.HCL
   - dogukanakkaya.chatgpt-code
   - znck.grammarly
+  - infracost.infracost
 pld_vscode:
   - alefragnani.project-manager
   - aquasecurityofficial.trivy-vulnerability-scanner
@@ -766,7 +769,6 @@ pld_vscode:
   - henriiik.docker-linter
   - humao.rest-client
   - huntertran.auto-markdown-toc
-  - infracost.infracost
   - kelvin.vscode-sshfs
   - marcostazi.vs-code-vagrantfile
   - medo64.render-crlf
