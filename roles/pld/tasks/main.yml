@@ -23,25 +23,32 @@
     - obsolete
     - keys
     - repositories
-- name: Remove obsoleted repository files
-  ansible.builtin.include_tasks: ./tasks/remove_repository_files.yml
-  loop: "{{ pld_files_remove | default([]) }}"
-  args:
-    apply:
-      tags:
-        - repositories
-        - files
-        - remove
-        - base
-        - obsolete
-  tags:
-    - always
+# - name: Remove obsoleted repository files
+#   ansible.builtin.include_tasks: ./tasks/remove_repository_files.yml
+#   loop: "{{ pld_files_remove | default([]) }}"
+#   args:
+#     apply:
+#       tags:
+#         - repositories
+#         - files
+#         - remove
+#         - base
+#         - obsolete
+#   tags:
+#     - always
 - name: Install keys and repositories
   ansible.builtin.include_tasks: install_keys_and_repos.yml
 
 - name: Install packages
   ansible.builtin.include_tasks: install_packages.yml
 
+- name: Install veeam packages
+  ansible.builtin.include_tasks: install_veeam.yml
+  when: pld_packages_veeam is defined and pld_packages_veeam | length > 0
+  tags:
+    - base
+    - packages
+    - veeam
 - name: Install pip packages
   ansible.builtin.include_tasks: install_pip.yml
   when: pld_pip is defined and pld_pip | length > 0

@@ -1,10 +1,26 @@
-# Install essentials - packages needed for repos or other packages. Mostly OS-related
+# Download essential packages using apt install --download-only
+
+- name: Download essential packages first
+  ansible.builtin.shell: "apt-get install --download-only -y {{ item }}"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  loop: "{{ pld_packages_essential | default([]) }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: download_essential
+  until: download_essential is success
+  any_errors_fatal: false
+  changed_when: false
+  tags:
+    - packages
+    - essential
+
 - name: Install essential packages
   ansible.builtin.apt:
     name: "{{ item }}"
     state: "{{ pld_install_state }}"
     update_cache: false
-  loop: "{{ pld_packages_essential }}"
+  loop: "{{ pld_packages_essential | default([]) }}"
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"
   register: packages_essential
@@ -12,14 +28,29 @@
   any_errors_fatal: false
   tags:
     - packages
+    - essential
+
+- name: Download all basic packages first
+  ansible.builtin.shell: "apt-get install --download-only -y {{ item }}"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  loop: "{{ pld_packages | default([]) }}"
+  ignore_errors: true
+  register: r_download_basic_packages
+  until: r_download_basic_packages is success
+  any_errors_fatal: false
+  changed_when: false
+  tags:
+    - packages
     - base
+
 # Install basic packages
 - name: Install basic packages
   ansible.builtin.apt:
     name: "{{ item }}"
     state: "{{ pld_install_state }}"
     update_cache: false
-  loop: "{{ pld_packages }}"
+  loop: "{{ pld_packages | default([]) }}"
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"
   register: r_packages
@@ -29,6 +60,21 @@
   tags:
     - packages
     - base
+
+- name: Download all custom packages first
+  ansible.builtin.shell: "apt-get install --download-only -y {{ item }}"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  loop: "{{ custom_packages | default([]) }}"
+  ignore_errors: true
+  register: r_download_custom_packages
+  until: r_download_custom_packages is success
+  changed_when: false
+  failed_when: false
+  tags:
+    - packages
+    - custom
+
 - name: Install custom packages
   ansible.builtin.apt:
     name: "{{ item }}"
@@ -43,8 +89,22 @@
   failed_when: false
   tags:
     - packages
-    - base
     - custom
+# Download flatpak apps first
+- name: Download flatpak apps first
+  ansible.builtin.shell: "flatpak install -y --no-deploy {{ item.name | string }} "
+  loop: "{{ pld_flatpak }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_download_flatpak
+  until: r_download_flatpak is success
+  any_errors_fatal: false
+  changed_when: false
+  failed_when: false
+  when: pld_install_flatpak is defined and pld_install_flatpak
+  tags:
+    - packages
+    - flatpak
 # Install flatpak packages
 - name: Install flatpak apps
   community.general.flatpak:
@@ -75,6 +135,21 @@
   tags:
     - packages
     - flatpak
+
+# Download optional packages
+- name: Download all optional packages first
+  ansible.builtin.shell: "apt-get install --download-only -y {{ item }}"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  loop: "{{ pld_packages_optional | default([]) }}"
+  ignore_errors: true
+  register: r_download_optional_packages
+  until: r_download_optional_packages is success
+  any_errors_fatal: false
+  changed_when: false
+  tags:
+    - packages
+    - optional
 # Install optional packages - if variable `pld_install_optional` is set to true
 - name: Install optional packages
   ansible.builtin.apt:

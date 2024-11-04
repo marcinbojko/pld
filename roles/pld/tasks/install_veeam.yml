@@ -1,0 +1,28 @@
+- name: Download veeam packages first
+  ansible.builtin.shell: "apt-get install --download-only -y {{ item }}"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  loop: "{{ pld_packages_veeam | default([]) }}"
+  ignore_errors: true
+  register: r_download_veeam_packages
+  until: r_download_veeam_packages is success
+  changed_when: false
+  tags:
+    - packages
+    - veeam
+
+- name: Install veeam packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: "{{ pld_install_state }}"
+    update_cache: false
+  loop: "{{ pld_packages_veeam | default([]) }}"
+  retries: "{{ pld_retries_count }}"
+  delay: "{{ pld_delay_time }}"
+  register: r_pld_packages_veeam
+  until: r_pld_packages_veeam is success
+  any_errors_fatal: false
+  ignore_errors: true
+  tags:
+    - packages
+    - veeam

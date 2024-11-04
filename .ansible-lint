@@ -1,8 +1,13 @@
+profile: production
 skip_list:
   - no-handler
   - command-instead-of-shell
+  - command-instead-of-module
   - package-latest
   - git-latest
   - yaml[line-length]
 exclude_paths:
   - .github/
+use_default_rules: true
+parseable: true
+offline: false

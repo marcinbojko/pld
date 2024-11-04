@@ -1,5 +1,5 @@
 # Tasks removes all files from `pld_files_remove` list
-- name: Remove obsolete files from variables file
+- name: "Remove obsolete files from variables file {{ item.path }}"
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent

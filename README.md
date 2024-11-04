@@ -1,10 +1,10 @@
-# Ansible role for your DevOps/SysOps Linux Mint 21.x/Zorin OS based workstation
+# Ansible role for your DevOps/SysOps Linux Mint 22.x/Zorin OS based workstation
 
 [![Super-Linter](https://github.com/marcinbojko/pld/actions/workflows/01_lint_me.yml/badge.svg)](https://github.com/marcinbojko/pld/actions/workflows/01_lint_me.yml)
 [![Ansible Lint](https://github.com/marcinbojko/pld/actions/workflows/02_ansible_lint.yml/badge.svg)](https://github.com/marcinbojko/pld/actions/workflows/02_ansible_lint.yml)
 <!-- TOC -->
 
-- [Ansible role for your DevOps/SysOps Linux Mint 21.x/Zorin OS based workstation](#ansible-role-for-your-devopssysops-linux-mint-21xzorin-os-based-workstation)
+- [Ansible role for your DevOps/SysOps Linux Mint 22.x/Zorin OS based workstation](#ansible-role-for-your-devopssysops-linux-mint-22xzorin-os-based-workstation)
   - [Description](#description)
   - [Prerequisites](#prerequisites)
   - [Ansible 2.10 and higher reminder](#ansible-210-and-higher-reminder)
@@ -40,7 +40,7 @@
 <!-- /TOC -->
 ## Description
 
-This role is designed to configure your Linux Mint 21.x or Zorin OS 17.x workstation. It will install essential packages, main packages, extra/optional packages, 3rd party software, and configure your system. It will also install extra binaries in `/usr/local/bin` folder.
+This role is designed to configure your Linux Mint 22.x or Zorin OS 17.x workstation. It will install essential packages, main packages, extra/optional packages, 3rd party software, and configure your system. It will also install extra binaries in `/usr/local/bin` folder.
 
 It will also change startup settings for a specific user (that's why you should not run this as root). It will also change `ansible.cfg`, `dconf` settings, and `sysctl` system settings.
 
@@ -48,7 +48,7 @@ It's an extension od my previous project - [https://github.com/marcinbojko/linux
 
 ## Prerequisites
 
-- installed `Linux Mint` 21.x - all 64-bit, standard options with extra codecs (available as selection during install)
+- installed `Linux Mint` 22.x - all 64-bit, standard options with extra codecs (available as selection during install)
 - installed `Zorin OS` 17.x - all 64-bit, standard options with extra codecs (available as selection during install)
 - access to internet
 - `openssh-server` installed and running

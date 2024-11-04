@@ -11,7 +11,7 @@ pld_deb822_repositories_optional:
     signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x77D026E2EEAD66BD
   - name: grub-customizer
     types: deb
-    suites: jammy
+    suites: noble
     components: main
     uris:
       - "http://ppa.launchpad.net/danielrichter2007/grub-customizer/ubuntu"
@@ -29,7 +29,7 @@ pld_deb822_repositories_optional:
     signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xD530E028F59EAE4D
   - name: trivy
     types: deb
-    suites: jammy
+    suites: noble
     components: main
     uris:
       - "https://aquasecurity.github.io/trivy-repo/deb"
@@ -47,7 +47,7 @@ pld_deb822_repositories_optional:
     signed_by: https://repository.veeam.com/keys/veeam.gpg
   - name: veracrypt
     types: deb
-    suites: jammy
+    suites: noble
     components: main
     uris:
       - "http://ppa.launchpad.net/unit193/encryption/ubuntu"
@@ -73,7 +73,7 @@ pld_deb822_repositories_optional:
     signed_by: https://downloads.k8slens.dev/keys/gpg
   - name: ngrok
     types: deb
-    suites: buster
+    suites: bullseye
     components: main
     uris:
       - "https://ngrok-agent.s3.amazonaws.com"
@@ -92,8 +92,8 @@ pld_deb822_repositories_optional:
 pld_packages_essential:
   - build-essential
   - dkms
-  - dotnet-runtime-7.0
-  - dotnet-sdk-7.0
+  - dotnet-runtime-8.0
+  - dotnet-sdk-8.0
   - gcc
   - libvte-dev
   - mc

@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     update_cache: true
     force: true
-  failed_when: false
+  ignore_errors: true
   any_errors_fatal: false
   changed_when: false
   register: r_apt_initial_refresh
@@ -24,7 +24,7 @@
   delay: "{{ pld_delay_time }}"
   until: r_clean_system_packages is success
   any_errors_fatal: false
-  failed_when: false
+  ignore_errors: true
   tags:
     - packages
     - base
@@ -144,6 +144,10 @@
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"
   until: r_apt_after_repos_refresh is success
+  failed_when:
+    - apt_result.failed is defined
+    - apt_result.failed
+    - not apt_result.msg | default('') is regex(".*weak.*algorithm.*")
   tags:
     - packages
     - base

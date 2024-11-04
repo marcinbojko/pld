@@ -5,7 +5,7 @@
     repo: "{{ item.repo }}"
     state: absent
     update_cache: false
-  loop: "{{ pld_repositories_remove }}"
+  loop: "{{ pld_repositories_remove | default([]) }}"
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"
   register: r_repositories_remove
@@ -16,7 +16,7 @@
     - base
     - obsolete
 # Tasks removes all files from `pld_files_remove` list
-- name: Remove_obsolete_files_from_variables_file
+- name: "Remove_obsolete_files_from_variables_file: {{ item.path }}"
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent

@@ -55,6 +55,10 @@
   delay: "{{ pld_delay_time }}"
   register: r_make_sure_zsh_is_installed
   until: r_make_sure_zsh_is_installed is success
+  failed_when:
+    - apt_result.failed is defined
+    - apt_result.failed
+    - not apt_result.msg | default('') is regex(".*weak.*algorithm.*")
   any_errors_fatal: true
   ignore_errors: false
 - name: Create or check users groups for zsh
