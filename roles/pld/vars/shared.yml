@@ -274,7 +274,6 @@ pld_repositories_remove:
   #   architectures: amd64
   #   signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA6DCF7707EBC211F
 
-
 pld_files_remove:
   - path: /etc/apt/sources.list.d/shutter.list
   - path: /etc/apt/sources.list.d/veeam.list
@@ -606,6 +605,8 @@ pld_npm:
     state: latest
   - name: dockerfilelint
     state: latest
+  - name: prettier
+    state: latest
 pld_pip_executable: pip3
 pld_pip:
   - pip
@@ -724,6 +725,8 @@ pld_files:
     destination: argocd
   - url: https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_amd64
     destination: yq
+  - url: https://github.com/patrickvane/shfmt/releases/download/master/shfmt_linux_amd64
+    destination: shfmt
 pld_ansible:
   cfg: /etc/ansible/ansible.cfg
   config:
@@ -1012,8 +1015,8 @@ pld_neofetch:
     - Disk
     - Local IP
   toggle_items:
-    - key: 'color_blocks'
-      value: 'off'
+    - key: "color_blocks"
+      value: "off"
 pld_startup_templates:
   - dest: maestral-maestral.desktop
     source: ./files/apps/maestral/maestral-maestral.desktop.j2

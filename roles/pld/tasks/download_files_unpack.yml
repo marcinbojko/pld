@@ -3,7 +3,7 @@
   ansible.builtin.file:
     path: "{{ pld_bin_path }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"
   changed_when: false
