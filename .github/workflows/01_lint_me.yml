@@ -20,10 +20,11 @@ jobs:
       # Runs the Super-Linter action
       - name: Run Super-Linter
         # workaround for superlinter issues
-        uses: github/super-linter@latest
+        uses: github/super-linter@main
         env:
-          DEFAULT_BRANCH: main,develop
+          DEFAULT_BRANCH: ${{ github.ref_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ANSIBLE: false
-          VALIDATE_NATURAL_LANGUAGE: false
-          VALIDATE_DOCKERFILE_HADOLINT: false
+          VALIDATE_ALL_CODEBASE: ${{ github.event_name != 'pull_request' }}
+          # VALIDATE_ANSIBLE: false
+          # VALIDATE_NATURAL_LANGUAGE: false
+          # VALIDATE_DOCKERFILE_HADOLINT: false
