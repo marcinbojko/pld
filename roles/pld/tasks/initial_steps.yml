@@ -4,7 +4,7 @@
     name: systemd-timesyncd
     state: present
     update_cache: false
-    allow_unauthenticated: true
+    allow_unauthenticated: ommited
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"
   register: r_systemd_timesyncd
