@@ -1,4 +1,5 @@
 # refresh apt cache
+ # checkov:skip=CKV_ANSIBLE_5: This task force paramaters is required in case of pre-system errors
 - name: Apt initial refresh
   ansible.builtin.apt:
     update_cache: true
