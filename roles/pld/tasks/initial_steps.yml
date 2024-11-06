@@ -1,4 +1,5 @@
 # Tasks for initial steps - time sync, remove obsolete repositories, files, keys, packages
+# checkov:skip=CKV_ANSIBLE_5: This task force paramaters is required in case of pre-system errors
 - name: Make sure timesyncd is installed
   ansible.builtin.apt:
     name: systemd-timesyncd
