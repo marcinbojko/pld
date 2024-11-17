@@ -25,27 +25,193 @@ permissions:
   statuses: write # Added
 jobs:
   # Set the job key. The key is displayed as the job name
-  # when a job name is not provided
-  super-lint:
-    # Name the Job
-    name: Lint code base
-    # Set the type of machine to run on
+  # # when a job name is not provided
+  # super-lint:
+  #   # Name the Job
+  #   name: Lint code base
+  #   # Set the type of machine to run on
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     # Checks out a copy of your repository on the ubuntu-latest machine
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     # Runs the Super-Linter action
+  #     - name: Run Super-Linter
+  #       # workaround for superlinter issues
+  #       uses: github/super-linter@main
+  #       env:
+  #         DEFAULT_BRANCH: ${{ github.ref_name }}
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         VALIDATE_ALL_CODEBASE: ${{ github.event_name != 'pull_request' }}
+  #         VALIDATE_JSCPD: false
+  #         # VALIDATE_ANSIBLE: false
+  #         VALIDATE_NATURAL_LANGUAGE: false
+  #         # VALIDATE_DOCKERFILE_HADOLINT: false
+  molecule:
+    name: Molecule
     runs-on: ubuntu-latest
 
     steps:
-      # Checks out a copy of your repository on the ubuntu-latest machine
-      - name: Checkout code
+      - name: Check out code
         uses: actions/checkout@v4
 
-      # Runs the Super-Linter action
-      - name: Run Super-Linter
-        # workaround for superlinter issues
-        uses: github/super-linter@main
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible-core molecule molecule-plugins[docker] docker yamllint ansible-lint pytest-testinfra
+
+      - name: Create molecule scenario
+        run: |
+          # Initialize molecule in the role
+          molecule init scenario -d docker default
+
+          # Configure molecule
+          cat > molecule/default/molecule.yml << EOF
+          ---
+          dependency:
+            name: galaxy
+            options:
+              requirements-file: molecule/default/requirements.yml
+              ignore-certs: true
+              ignore-errors: true
+
+          driver:
+            name: docker
+
+          platforms:
+            - name: mint22
+              image: linuxmintd/mint22-amd64
+              pre_build_image: false
+              dockerfile: Dockerfile.j2
+              privileged: true
+              command: "/lib/systemd/systemd"
+              volumes:
+                - /sys/fs/cgroup:/sys/fs/cgroup:rw
+              tmpfs:
+                - /tmp
+                - /run
+                - /run/lock
+              cgroupns_mode: host
+
+          provisioner:
+            name: ansible
+            env:
+              ANSIBLE_FORCE_COLOR: "true"
+            config_options:
+              defaults:
+                interpreter_python: auto_silent
+                callback_whitelist: profile_tasks, timer, yaml
+            playbooks:
+              create: create.yml
+              converge: converge.yml
+              verify: verify.yml
+
+          verifier:
+            name: testinfra
+            options:
+              verbose: true
+
+          lint: |
+            set -e
+            yamllint .
+            ansible-lint .
+          EOF
+
+          # Create Dockerfile template for Mint
+          cat > molecule/default/Dockerfile.j2 << EOF
+          FROM linuxmintd/mint22-amd64
+
+          # Install system packages needed for Ansible/systemd
+          RUN apt-get update && \
+              apt-get install -y python3 python3-pip sudo systemd systemd-sysv \
+                               python3-apt aptitude && \
+              apt-get clean && \
+              rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+          # Configure systemd
+          RUN cd /lib/systemd/system/sysinit.target.wants/ && \
+              rm $(ls | grep -v systemd-tmpfiles-setup)
+
+          RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
+              /etc/systemd/system/*.wants/* \
+              /lib/systemd/system/local-fs.target.wants/* \
+              /lib/systemd/system/sockets.target.wants/*udev* \
+              /lib/systemd/system/sockets.target.wants/*initctl* \
+              /lib/systemd/system/basic.target.wants/* \
+              /lib/systemd/system/anaconda.target.wants/*
+
+          VOLUME [ "/sys/fs/cgroup" ]
+          CMD ["/lib/systemd/systemd"]
+          EOF
+
+          # Create converge playbook
+          cat > molecule/default/converge.yml << EOF
+          ---
+          - name: Converge
+            hosts: all
+            roles:
+              - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+          EOF
+
+          # Create verify playbook
+          cat > molecule/default/verify.yml << EOF
+          ---
+          - name: Verify
+            hosts: all
+            gather_facts: false
+            tasks:
+              - name: Run test-infra tests
+                command: pytest -v --connection=ansible --hosts=ansible://all
+          EOF
+
+          # Create basic test
+          mkdir -p molecule/default/tests
+          cat > molecule/default/tests/test_default.py << EOF
+          def test_is_mint22(host):
+              # Check if it's Linux Mint 22
+              os_release = host.file("/etc/os-release")
+              assert os_release.contains("Linux Mint")
+              assert os_release.contains("vera")  # Mint 22 codename
+
+              # Add your role-specific tests here
+              # Example:
+              # pkg = host.package("your-package")
+              # assert pkg.is_installed
+              # svc = host.service("your-service")
+              # assert svc.is_running
+              # assert svc.is_enabled
+          EOF
+
+          # Create requirements file (if needed)
+          cat > molecule/default/requirements.yml << EOF
+          ---
+          # List your role dependencies here
+          # Example:
+          # - name: username.role_name
+          #   version: 1.0.0
+          EOF
+
+      - name: Run molecule tests
+        run: |
+          molecule test
         env:
-          DEFAULT_BRANCH: ${{ github.ref_name }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: ${{ github.event_name != 'pull_request' }}
-          VALIDATE_JSCPD: false
-          # VALIDATE_ANSIBLE: false
-          VALIDATE_NATURAL_LANGUAGE: false
-          # VALIDATE_DOCKERFILE_HADOLINT: false
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_NO_LOG: 'false'
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: molecule-results
+          path: |
+            molecule/default/tests/*.log
+            molecule/default/*.log
+          retention-days: 5
