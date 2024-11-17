@@ -72,6 +72,14 @@ jobs:
           # Initialize molecule in the role
           molecule init scenario -d docker default
 
+          # Configure requirements
+          cat > molecule/default/requirements.yml << EOF
+          ---
+            collections:
+              - name: ansible.posix
+              - name: community.general
+              - name: community.crypto
+          EOF
           # Configure molecule
           cat > molecule/default/molecule.yml << EOF
           ---
