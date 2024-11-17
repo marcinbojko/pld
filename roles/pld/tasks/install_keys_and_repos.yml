@@ -1,7 +1,10 @@
 # refresh apt cache
+# checkov:skip=CKV_ANSIBLE_6: This task force paramaters is required in case of pre-system errors
 - name: Apt initial refresh
   ansible.builtin.apt:
     update_cache: true
+    # checkov:skip=CKV_ANSIBLE_6
+    # Reason: This task force parameters is required in case of pre-system errors
     force: true
   ignore_errors: true
   any_errors_fatal: false
@@ -136,6 +139,8 @@
 - name: After install apt refresh
   ansible.builtin.apt:
     update_cache: true
+    # checkov:skip=CKV_ANSIBLE_6
+    # Reason: This task force parameters is required in case of pre-system errors
     force: true
   ignore_errors: true
   any_errors_fatal: false

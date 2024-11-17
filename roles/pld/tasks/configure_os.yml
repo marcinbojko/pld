@@ -29,7 +29,7 @@
     dest: "/etc/sudoers.d/{{ pld_active_user }}"
     owner: root
     group: root
-    mode: '0444'
+    mode: "0444"
     content: |
       {{ pld_active_user }} ALL=(ALL) NOPASSWD: ALL
   any_errors_fatal: false
@@ -39,7 +39,7 @@
   ansible.builtin.file:
     path: /etc/systemd/system/fstrim.timer.d
     state: directory
-    mode: '0644'
+    mode: "0644"
 
 - name: Create fstrim override for systemd
   ansible.builtin.copy:
@@ -48,7 +48,7 @@
       [Timer]
       OnCalendar=hourly
       OnBootSec=5m
-    mode: '0755'
+    mode: "0755"
   register: r_create_fstrim_override
 
 - name: Start fstrim.timer

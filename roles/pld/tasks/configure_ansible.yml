@@ -16,7 +16,7 @@
     option: "{{ item.option }}"
     value: "{{ item.value | string }}"
     state: "{{ item.state | string }}"
-    mode: '0644'
+    mode: "0644"
     backup: true
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"

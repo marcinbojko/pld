@@ -274,7 +274,6 @@ pld_repositories_remove:
   #   architectures: amd64
   #   signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA6DCF7707EBC211F
 
-
 pld_files_remove:
   - path: /etc/apt/sources.list.d/shutter.list
   - path: /etc/apt/sources.list.d/veeam.list
@@ -551,11 +550,11 @@ pld_deb:
   - https://github.com/balena-io/etcher/releases/download/v1.19.25/balena-etcher_1.19.25_amd64.deb
   - https://github.com/goodwithtech/dockle/releases/download/v0.4.14/dockle_0.4.14_Linux-64bit.deb
   - https://github.com/kaikramer/keystore-explorer/releases/download/v5.5.3/kse_5.5.3_all.deb
-  - https://github.com/aquasecurity/kube-bench/releases/download/v0.9.1/kube-bench_0.9.1_linux_amd64.deb
+  - https://github.com/aquasecurity/kube-bench/releases/download/v0.9.2/kube-bench_0.9.2_linux_amd64.deb
   - https://github.com/anchore/syft/releases/download/v1.15.0/syft_1.15.0_linux_amd64.deb
   - https://github.com/turbot/steampipe/releases/download/v1.0.0/steampipe_linux_amd64.deb
   - https://github.com/ramboxapp/download/releases/download/v2.4.1/Rambox-2.4.1-linux-x64.deb
-  - https://github.com/derailed/k9s/releases/download/v0.32.5/k9s_linux_amd64.deb
+  - https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.deb
   - https://github.com/getsops/sops/releases/download/v3.9.1/sops_3.9.1_amd64.deb
   - https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin_18.2.0_amd64.deb
   - https://cdn.insynchq.com/builds/linux/3.9.4.60020/insync_3.9.4.60020-noble_amd64.deb
@@ -606,6 +605,10 @@ pld_npm:
     state: latest
   - name: dockerfilelint
     state: latest
+  - name: prettier
+    state: latest
+  - name: textlint
+    state: latest
 pld_pip_executable: pip3
 pld_pip:
   - pip
@@ -640,7 +643,7 @@ pld_unpack:
     source: kubeconform
     folder:
     destination_file: kubeconform-linux-amd64.tar.gz
-  - url: https://github.com/terraform-linters/tflint/releases/download/v0.51.2/tflint_linux_amd64.zip
+  - url: https://github.com/terraform-linters/tflint/releases/download/v0.54.0/tflint_linux_amd64.zip
     destination: tflint
     source: tflint
     destination_file: tflint.zip
@@ -655,7 +658,7 @@ pld_unpack:
     source: krew-linux_amd64
     destination_file: krew-linux_amd64.tar.gz
     folder:
-  - url: https://github.com/containerd/nerdctl/releases/download/v1.7.6/nerdctl-1.7.6-linux-amd64.tar.gz
+  - url: https://github.com/containerd/nerdctl/releases/download/v2.0.0/nerdctl-2.0.0-linux-amd64.tar.gz
     destination: nerdctl
     source: nerdctl
     destination_file: nerdctl-linux-amd64.tar.gz
@@ -665,7 +668,7 @@ pld_unpack:
     source: kustomize
     destination_file: kustomize.tar.gz
     folder:
-  - url: https://github.com/doitintl/kube-no-trouble/releases/download/nightly-0.7.3-31-g2e643a7/kubent-nightly-0.7.3-31-g2e643a7-linux-amd64.tar.gz
+  - url: https://github.com/doitintl/kube-no-trouble/releases/download/nightly-0.7.3-35-g1afe0af/kubent-nightly-0.7.3-35-g1afe0af-linux-amd64.tar.gz
     destination: kubent
     source: kubent
     destination_file: kubent.tar.gz
@@ -675,7 +678,7 @@ pld_unpack:
     source: act
     destination_file: act_Linux_x86_64.tar.gz
     folder:
-  - url: https://github.com/eza-community/eza/releases/download/v0.20.6/eza_x86_64-unknown-linux-gnu.tar.gz
+  - url: https://github.com/eza-community/eza/releases/download/v0.20.8/eza_x86_64-unknown-linux-gnu.tar.gz
     destination: eza
     source: eza
     destination_file: eza_x86_64-unknown-linux-gnu.tar.gz
@@ -694,10 +697,10 @@ pld_downloads:
   - url: https://github.com/ffuf/ffuf/releases/download/v2.1.0/ffuf_2.1.0_linux_amd64.tar.gz
     destination: ffuf
     skip_tree: false
-  - url: https://github.com/FairwindsOps/polaris/releases/download/9.5.0/polaris_linux_amd64.tar.gz
+  - url: https://github.com/FairwindsOps/polaris/releases/download/9.6.0/polaris_linux_amd64.tar.gz
     destination: polaris
     skip_tree: false
-  - url: https://github.com/orf/gping/releases/download/gping-v1.16.1/gping-Linux-x86_64.tar.gz
+  - url: https://github.com/orf/gping/releases/download/gping-v1.18.0/gping-Linux-x86_64.tar.gz
     destination: gping
     skip_tree: false
   - url: https://github.com/jesseduffield/lazydocker/releases/download/v0.23.3/lazydocker_0.23.3_Linux_x86_64.tar.gz
@@ -720,10 +723,14 @@ pld_files:
     destination: hadolint
   - url: https://github.com/alexellis/k3sup/releases/download/0.13.6/k3sup
     destination: k3sup
-  - url: https://github.com/argoproj/argo-cd/releases/download/v2.12.6/argocd-linux-amd64
+  - url: https://github.com/argoproj/argo-cd/releases/download/v2.12.7/argocd-linux-amd64
     destination: argocd
-  - url: https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_amd64
+  - url: https://github.com/mikefarah/yq/releases/download/v4.44.5/yq_linux_amd64
     destination: yq
+  - url: https://github.com/patrickvane/shfmt/releases/download/master/shfmt_linux_amd64
+    destination: shfmt
+  - url: https://github.com/danielfoehrKn/kubeswitch/releases/download/0.9.2/switcher_linux_amd64
+    destination: switcher
 pld_ansible:
   cfg: /etc/ansible/ansible.cfg
   config:
@@ -1012,8 +1019,8 @@ pld_neofetch:
     - Disk
     - Local IP
   toggle_items:
-    - key: 'color_blocks'
-      value: 'off'
+    - key: "color_blocks"
+      value: "off"
 pld_startup_templates:
   - dest: maestral-maestral.desktop
     source: ./files/apps/maestral/maestral-maestral.desktop.j2

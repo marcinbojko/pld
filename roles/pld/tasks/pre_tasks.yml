@@ -20,7 +20,7 @@
 - name: Assert root partition has at least 10GB of free_space
   ansible.builtin.assert:
     that: item.size_available > 1073741824
-  loop: '{{ ansible_mounts }}'
+  loop: "{{ ansible_mounts }}"
   ignore_errors: false
   when: item.mount == '/'
   tags:

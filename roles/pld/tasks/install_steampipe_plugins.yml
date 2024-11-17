@@ -16,3 +16,14 @@
       changed_when: false
       any_errors_fatal: false
       when: "'steampipe' in ansible_facts.packages"
+  rescue:
+    - name: Log failure
+      ansible.builtin.debug:
+        msg: "Failed to install steampipe plugin: {{ item.name }}. Error: {{ r_install_steampipe_plugins.stderr }}"
+    - name: Notify about retry
+      ansible.builtin.debug:
+        msg: "Attempting recovery or notification steps..."
+  always:
+    - name: Cleanup
+      ansible.builtin.debug:
+        msg: "Cleaning up after steampipe plugin installation attempt"

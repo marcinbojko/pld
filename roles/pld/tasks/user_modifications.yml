@@ -26,7 +26,7 @@
     state: directory
     owner: "{{ pld_active_user }}"
     group: "{{ pld_active_user }}"
-    mode: '0755'
+    mode: "0755"
   register: r_create_autostart
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"
@@ -42,7 +42,7 @@
     src: "{{ item.source }}"
     owner: "{{ pld_active_user }}"
     group: "{{ pld_active_user }}"
-    mode: '0644'
+    mode: "0644"
     force: false
   loop: "{{ pld_startup }}"
   any_errors_fatal: false
@@ -58,7 +58,7 @@
     state: directory
     owner: "{{ pld_active_user }}"
     group: "{{ pld_active_user }}"
-    mode: '0755'
+    mode: "0755"
   register: r_create_local_bin
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"
@@ -70,11 +70,11 @@
 - name: Add directory to PATH in Bash
   ansible.builtin.lineinfile:
     path: "{{ ansible_env.HOME }}/.bashrc"
-    line: 'export PATH=$PATH:/usr/local/bin'
+    line: "export PATH=$PATH:/usr/local/bin"
     create: true
-    mode: '0644'
+    mode: "0644"
     state: present
-    regexp: '^export PATH=.*:/usr/local/bin.*$'
+    regexp: "^export PATH=.*:/usr/local/bin.*$"
     backrefs: true
   become: false
   failed_when: false
@@ -82,11 +82,11 @@
 - name: Add directory to PATH in Zsh
   ansible.builtin.lineinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
-    line: 'export PATH=$PATH:/usr/local/bin'
+    line: "export PATH=$PATH:/usr/local/bin"
     create: true
     state: present
-    mode: '0644'
-    regexp: '^export PATH=.*:/usr/local/bin.*$'
+    mode: "0644"
+    regexp: "^export PATH=.*:/usr/local/bin.*$"
     backrefs: true
   become: false
   failed_when: false
@@ -94,11 +94,11 @@
 - name: Add directory to PATH in Fish
   ansible.builtin.lineinfile:
     path: "{{ ansible_env.HOME }}/.config/fish/config.fish"
-    line: 'set -gx PATH $PATH /usr/local/bin'
+    line: "set -gx PATH $PATH /usr/local/bin"
     create: true
     state: present
-    mode: '0644'
-    regexp: '^set -gx PATH .* /usr/local/bin.*$'
+    mode: "0644"
+    regexp: "^set -gx PATH .* /usr/local/bin.*$"
     backrefs: true
   become: false
   failed_when: false
@@ -110,7 +110,7 @@
     dest: "{{ active_user_homedir }}/.config/autostart/{{ item.dest }}"
     owner: "{{ pld_active_user }}"
     group: "{{ pld_active_user }}"
-    mode: '0644'
+    mode: "0644"
   loop: "{{ pld_startup_templates }}"
   any_errors_fatal: false
   register: r_create_autostart_items

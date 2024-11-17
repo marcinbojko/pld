@@ -28,3 +28,27 @@
       changed_when: r_install_extension.stdout | length > 0
       any_errors_fatal: false
       ignore_errors: true
+  rescue:
+    - name: Log failed extensions
+      ansible.builtin.debug:
+        msg: >
+          Failed to process extensions.
+          Uninstall results: {{ r_remove_obsolete_extensions | default('N/A') }}
+          Install results: {{ r_install_extension | default('N/A') }}
+
+    - name: Notify about retry options
+      ansible.builtin.debug:
+        msg: "You can try installing extensions manually or rerun the playbook"
+
+  always:
+    - name: Verify installed extensions
+      ansible.builtin.shell: code --list-extensions
+      register: current_extensions
+      become: true
+      become_user: "{{ pld_active_user }}"
+      changed_when: false
+      ignore_errors: true
+
+    - name: Show current extensions
+      ansible.builtin.debug:
+        msg: "Current VS Code extensions: {{ current_extensions.stdout_lines | default([]) }}"

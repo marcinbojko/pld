@@ -110,7 +110,7 @@ pld_startup:
   - filename: DockX.desktop
     source: ./files/apps/dockbarx/DockX.desktop
 pld_dconf:
-   # remove alt+f7 move window shortcut
+  # remove alt+f7 move window shortcut
   - key: "/org/cinnamon/muffin/keybindings/begin-move"
     state: present
     value: "['']"

@@ -2,6 +2,7 @@
 
 [![Super-Linter](https://github.com/marcinbojko/pld/actions/workflows/01_lint_me.yml/badge.svg)](https://github.com/marcinbojko/pld/actions/workflows/01_lint_me.yml)
 [![Ansible Lint](https://github.com/marcinbojko/pld/actions/workflows/02_ansible_lint.yml/badge.svg)](https://github.com/marcinbojko/pld/actions/workflows/02_ansible_lint.yml)
+
 <!-- TOC -->
 
 - [Ansible role for your DevOps/SysOps Linux Mint 22.x/Zorin OS based workstation](#ansible-role-for-your-devopssysops-linux-mint-22xzorin-os-based-workstation)
@@ -38,6 +39,7 @@
   - [Known issues](#known-issues)
 
 <!-- /TOC -->
+
 ## Description
 
 This role is designed to configure your Linux Mint 22.x or Zorin OS 17.x workstation. It will install essential packages, main packages, extra/optional packages, 3rd party software, and configure your system. It will also install extra binaries in `/usr/local/bin` folder.
@@ -106,7 +108,7 @@ sudo apt remove python2
 ansible-playbook ./pld.yaml -i myhost.lst
 ```
 
-or change user you're using (startup related stuff will be done for that  specific user user)
+or change user you're using (startup related stuff will be done for that specific user user)
 
 ```bash
 ansible-playbook ./pld.yaml -i myhost.lst --extra-vars "pld_active_user=myuser"
@@ -138,29 +140,29 @@ Variables are separated into multiple sets of files.
 
 Variables for controlling playbook behavior
 
-| Variable                   | Value | Comment                                      |
-|----------------------------|-------|----------------------------------------------|
-| pld_active_user            | "{{ ansible_ssh_user }}" | User for which you're setting folders. By default taken from group_vars |
-| pld_bin_path               | /usr/local/bin | Where to put all downloaded execs |
-| pld_config_ansible         | true  | Change ansible settings in ansible.cfg |
-| pld_config_autostart       | true  | Change application autostart settings |
-| pld_config_dconf           | true  | Change dconf settings |
-| pld_config_neofetch        | true  | Change neofetch settings |
-| pld_config_sysctl          | true  | Change sysctl settings |
-| pld_delay_time             | 1     | Delay time in seconds between retries |
-| pld_install_deb            | true  | Should extra deb packages be installed |
-| pld_install_flatpak        | true  | Should flatpak packages be installed |
-| pld_install_npm            | true  | Should npm packages be installed |
-| pld_install_optional       | true  | Should optional packages be installed |
-| pld_install_state          | latest | If set to latest, every pass of playbook will also update packages |
-| pld_install_steampipe_plugins | true | Should we install extra steampipe plugins |
-| pld_install_vscode_extensions | true | Should we install extra vscode extensions |
-| pld_install_yubico         | false | Should we install yubico software |
-| pld_install_zsh            | true  | Should we install oh-my-zsh and p10k theme |
-| pld_reboot_required        | false | Force reboot even if apt upgrade won't change anything |
-| pld_remove_flatpak         | true  | Should flatpak packages be removed |
-| pld_retries_count          | 1     | How many retries |
-| pld_unpack_folder          | /tmp/linux_mint | Which folder to use when downloading and unarchiving |
+| Variable                      | Value                    | Comment                                                                 |
+| ----------------------------- | ------------------------ | ----------------------------------------------------------------------- |
+| pld_active_user               | "{{ ansible_ssh_user }}" | User for which you're setting folders. By default taken from group_vars |
+| pld_bin_path                  | /usr/local/bin           | Where to put all downloaded execs                                       |
+| pld_config_ansible            | true                     | Change ansible settings in ansible.cfg                                  |
+| pld_config_autostart          | true                     | Change application autostart settings                                   |
+| pld_config_dconf              | true                     | Change dconf settings                                                   |
+| pld_config_neofetch           | true                     | Change neofetch settings                                                |
+| pld_config_sysctl             | true                     | Change sysctl settings                                                  |
+| pld_delay_time                | 1                        | Delay time in seconds between retries                                   |
+| pld_install_deb               | true                     | Should extra deb packages be installed                                  |
+| pld_install_flatpak           | true                     | Should flatpak packages be installed                                    |
+| pld_install_npm               | true                     | Should npm packages be installed                                        |
+| pld_install_optional          | true                     | Should optional packages be installed                                   |
+| pld_install_state             | latest                   | If set to latest, every pass of playbook will also update packages      |
+| pld_install_steampipe_plugins | true                     | Should we install extra steampipe plugins                               |
+| pld_install_vscode_extensions | true                     | Should we install extra vscode extensions                               |
+| pld_install_yubico            | false                    | Should we install yubico software                                       |
+| pld_install_zsh               | true                     | Should we install oh-my-zsh and p10k theme                              |
+| pld_reboot_required           | false                    | Force reboot even if apt upgrade won't change anything                  |
+| pld_remove_flatpak            | true                     | Should flatpak packages be removed                                      |
+| pld_retries_count             | 1                        | How many retries                                                        |
+| pld_unpack_folder             | /tmp/linux_mint          | Which folder to use when downloading and unarchiving                    |
 
 ### OS specific variables
 
@@ -170,67 +172,67 @@ Most OS variables are stored in `roles/pld/vars/*.yml` files.
 
 Are located in file `roles/pld/vars/shared.yml`
 
-| Variable                   | Description |
-|----------------------------|-------------|
-| ansible_python_interpreter | Specifies the Python interpreter path for Ansible |
-| pld_alternatives           | List of alternatives to set |
-| pld_ansible                | List of Ansible roles to install |
-| pld_codename               | Codename for the Linux Mint or Zorin OS version |
-| pld_deb                    | List of deb packages to install |
-| pld_deb822_repositories    | List of deb822 repositories to add |
-| pld_downloads              | List of URLs to download files from |
-| pld_files                  | List of files to copy |
-| pld_files_remove           | List of files to remove |
-| pld_files_remove_bin_path  | Path to remove files from |
-| pld_flatpak                | List of Flatpak packages to install |
-| pld_flatpak_remove         | List of Flatpak packages to remove |
-| pld_global_env             | List of global environment variables to set |
-| pld_keys                   | List of GPG keys to import |
-| pld_keys_keyserver         | Keyserver to use for importing GPG keys |
-| pld_keys_remove            | List of GPG keys to remove |
-| pld_neofetch               | Whether to configure Neofetch |
-| pld_npm                    | List of npm packages to install |
-| pld_packages               | List of packages to install |
-| pld_packages_clean_system  | Whether to clean the system before installing packages |
-| pld_packages_optional      | List of optional packages to install |
-| pld_packages_remove        | List of packages to remove |
-| pld_pip                    | List of Python packages to install with pip |
-| pld_pip_executable         | Path to the pip executable |
-| pld_repositories_remove    | List of repositories to remove |
-| pld_services               | List of services to enable or disable |
-| pld_startup_template       | Path to the startup template file |
-| pld_steampipe              | List of Steampipe plugins to install |
-| pld_sysctl                 | List of sysctl settings to apply |
-| pld_timezone               | Timezone to set |
-| pld_unpack                 | List of archives to unpack |
-| pld_vscode                 | List of Visual Studio Code extensions to install |
+| Variable                   | Description                                              |
+| -------------------------- | -------------------------------------------------------- |
+| ansible_python_interpreter | Specifies the Python interpreter path for Ansible        |
+| pld_alternatives           | List of alternatives to set                              |
+| pld_ansible                | List of Ansible roles to install                         |
+| pld_codename               | Codename for the Linux Mint or Zorin OS version          |
+| pld_deb                    | List of deb packages to install                          |
+| pld_deb822_repositories    | List of deb822 repositories to add                       |
+| pld_downloads              | List of URLs to download files from                      |
+| pld_files                  | List of files to copy                                    |
+| pld_files_remove           | List of files to remove                                  |
+| pld_files_remove_bin_path  | Path to remove files from                                |
+| pld_flatpak                | List of Flatpak packages to install                      |
+| pld_flatpak_remove         | List of Flatpak packages to remove                       |
+| pld_global_env             | List of global environment variables to set              |
+| pld_keys                   | List of GPG keys to import                               |
+| pld_keys_keyserver         | Keyserver to use for importing GPG keys                  |
+| pld_keys_remove            | List of GPG keys to remove                               |
+| pld_neofetch               | Whether to configure Neofetch                            |
+| pld_npm                    | List of npm packages to install                          |
+| pld_packages               | List of packages to install                              |
+| pld_packages_clean_system  | Whether to clean the system before installing packages   |
+| pld_packages_optional      | List of optional packages to install                     |
+| pld_packages_remove        | List of packages to remove                               |
+| pld_pip                    | List of Python packages to install with pip              |
+| pld_pip_executable         | Path to the pip executable                               |
+| pld_repositories_remove    | List of repositories to remove                           |
+| pld_services               | List of services to enable or disable                    |
+| pld_startup_template       | Path to the startup template file                        |
+| pld_steampipe              | List of Steampipe plugins to install                     |
+| pld_sysctl                 | List of sysctl settings to apply                         |
+| pld_timezone               | Timezone to set                                          |
+| pld_unpack                 | List of archives to unpack                               |
+| pld_vscode                 | List of Visual Studio Code extensions to install         |
 | pld_vscode_obsolete        | List of obsolete Visual Studio Code extensions to remove |
-| pld_yubico_flatpak         | List of Yubico Flatpak packages to install |
-| pld_yubico_packages        | List of Yubico packages to install |
-| pld_yubico_repo_key        | GPG key for Yubico repository |
-| pld_yubico_repositories    | List of Yubico repositories to add |
+| pld_yubico_flatpak         | List of Yubico Flatpak packages to install               |
+| pld_yubico_packages        | List of Yubico packages to install                       |
+| pld_yubico_repo_key        | GPG key for Yubico repository                            |
+| pld_yubico_repositories    | List of Yubico repositories to add                       |
 
 #### Variables for `Linux Mint 21.x`
 
 Are located in file `roles/pld/vars/Linux Mint.yml`
 
-| Variable                         | Description                                      |
-|_---------------------------------|--------------------------------------------------|
-| pld_deb822_repositories_optional | Optional deb822 repositories to add for Mint     |
-| pld_packages_essential           | Essential packages to install                    |
-| pld_startup                      | Startup settings for specific user               |
-| pld_dconf                        | Dconf settings                                   |
+| Variable | Description |
+|\_---------------------------------|--------------------------------------------------|
+| pld_deb822_repositories_optional | Optional deb822 repositories to add for Mint |
+| pld_packages_essential | Essential packages to install |
+| pld_startup | Startup settings for specific user |
+| pld_dconf | Dconf settings |
 
 #### Variables for `Zorin OS 17.x`
 
 Are located in file `roles/pld/vars/Zorin OS.yml`
 
-| Variable                         | Description                                      |
-|_---------------------------------|--------------------------------------------------|
-| pld_deb822_repositories_optional | Optional deb822 repositories to add for Zorin    |
-| pld_packages_essential           | Essential packages to install                    |
-| pld_startup                      | Startup settings for specific user               |
-| pld_dconf                        | Dconf settings                                   |
+| Variable | Description |
+|\_---------------------------------|--------------------------------------------------|
+| pld_deb822_repositories_optional | Optional deb822 repositories to add for Zorin |
+| pld_packages_essential | Essential packages to install |
+| pld_startup | Startup settings for specific user |
+| pld_dconf | Dconf settings |
 
 ### Variables precedence
 
@@ -299,7 +301,7 @@ custom_packages:
 - `kubernetes-129` - Google Kubernetes kubeadm & kubectl for 1.29
 - `microsoft-prod-deb` - Microsoft .Net Core
 - `mozilla-team` - Stable Firefox and Mozilla Software
-- `nodesource20` -  Node.js LTS
+- `nodesource20` - Node.js LTS
 - `palemoon` - Chromium based Java+Flash browser
 - `ubuntu-mozilla-security` - Firefox and Thunderbird Security
 - `virtualbox` - Virtualization Software
@@ -324,127 +326,127 @@ custom_packages:
 
 ### Packages: Basic (not complete list)
 
-|Software|Type|Link|
-|------------------|--------|---------------------|
-| Amass| In-depth Attack Surface Mapping and Asset Discovery|[https://github.com/OWASP/Amass](https://github.com/OWASP/Amass)|
-| AngryIP Scanner |Network Scanner |[https://angryip.org/](https://angryip.org/)|
-| Azure CLI |Command-line tools for Azure|[https://github.com/Azure/azure-cli](https://github.com/Azure/azure-cli)|
-| Balena-etcher |Image Writer| [https://www.balena.io/etcher/](https://www.balena.io/etcher/)|
-| Ctop| Container process monitor | [https://github.com/bcicen/ctop](https://github.com/bcicen/ctop)|
-| Diodon | Clipboard Manager | [https://launchpad.net/diodon](https://launchpad.net/diodon)|
-| Dive| Docker image explorer | [https://github.com/wagoodman/dive](https://github.com/wagoodman/dive)|
-| Dockle|Container Image Linter for Security|[https://github.com/goodwithtech/dockle](https://github.com/goodwithtech/dockle)|
-| Double Commander|File Manager|[https://doublecmd.sourceforge.io/](https://doublecmd.sourceforge.io/)|
-| Ffuf|Fast web fuzzer written in Go|[https://github.com/ffuf/ffuf](https://github.com/ffuf/ffuf)|
-| GitKraken | Git Client |[https://www.gitkraken.com/](https://www.gitkraken.com/) |
-| Google Chrome |Browser | [https://www.google.com/intl/pl_ALL/chrome/](https://www.google.com/intl/pl_ALL/chrome/)|
-| Google Cloud SDK|Command-line tools for GCP|[https://cloud.google.com/sdk](https://cloud.google.com/sdk)|
-| Google Kubectl/Kubeadm | Kubernetes Manager| [https://kubernetes.io/docs/reference/kubectl/overview/](https://kubernetes.io/docs/reference/kubectl/overview/)|
-| Gping|Ping with a graph|[https://github.com/orf/gping](https://github.com/orf/gping)|
-| Hadolint| Docker linter|[https://github.com/hadolint/hadolint](https://github.com/hadolint/hadolint)|
-| Helm | Package manager for Kubernetes |[https://helm.sh/](https://helm.sh/)|
-| k3d |k3d creates containerized k3s clusters|[https://k3d.io/](https://k3d.io/)|
-| k3s |Lightweight Kubernetes 5 less than k8s|[https://k3s.io/](https://k3s.io/)|
-| k9s |Kubernetes CLI Manager|[https://github.com/derailed/k9s](https://github.com/derailed/k9s)|
-| Keepass | Password Manager| [https://keepass.info/](https://keepass.info/)|
-| Kubeconform| Kubernetes config validator|[https://github.com/yannh/kubeconform](https://github.com/yannh/kubeconform)|
-| Kubent| Kubernetes-no-trouble|[https://github.com/doitintl/kube-no-trouble](https://github.com/doitintl/kube-no-trouble)|
-| Kubernetes| Production-Grade Container Orchestration|[https://kubernetes.io/](https://kubernetes.io/)|
-| Kustomize|Kubernetes customiser |[https://github.com/kubernetes-sigs/kustomize](https://github.com/kubernetes-sigs/kustomize)|
-| Lens| Kubernetes IDE| [https://k8slens.dev/](https://k8slens.dev/)|
-| Minikube | Run Kubernetes locally |[https://github.com/kubernetes/minikube](https://github.com/kubernetes/minikube)|
-| Packer | Image creator |[https://www.packer.io/](https://www.packer.io/)|
-| Packetsender|Packet Sender can send and receive UDP, TCP, and SSL on the ports of your choosing|[https://packetsender.com/](https://packetsender.com/)|
-| Palemoon | Browser alternative (Java_+Flash)| [https://www.palemoon.org/](https://www.palemoon.org/)|
-| Polaris|Validation of best practices in your Kubernetes clusters|[https://www.fairwinds.com/polaris](https://www.fairwinds.com/polaris)|
-| RamboxOS |Multi IM|[https://github.com/TheGoddessInari/hamsket](https://github.com/TheGoddessInari/hamsket)|
-| Rancher Desktop|Rancher Desktop runs Kubernetes and container management on your desktop| [https://rancherdesktop.io/](https://rancherdesktop.io/)|
-| Redshift | Monitor temperature changer| [http://jonls.dk/redshift/](http://jonls.dk/redshift/)|
-| Remmina | Remote Connection Manager |[https://remmina.org/](https://remmina.org/)|
-| Shutter | Screenshot Manipulation| [http://shutter-project.org/](http://shutter-project.org/)|
-| Sops    | Secrets manager|[https://github.com/getsops/sops](https://github.com/getsops/sops)|
-| Synapse | Symantic Launcher|[https://launchpad.net/synapse-project](https://launchpad.net/synapse-project)|
-| Tabby | Modern Terminal|[https://github.com/Eugeny/terminus](https://github.com/Eugeny/terminus)|
-| Teller| Secret manager|[https://github.com/tellerops/teller](https://github.com/tellerops/teller)|
-| Terraform|Infrastructure as Code|[https://www.terraform.io/](https://www.terraform.io/)|
-| Vagrant | Unified Workflow|[https://www.vagrantup.com/](https://www.vagrantup.com/)|
-| Vault | Secrets Manager |[https://www.vaultproject.io/](https://www.vaultproject.io/)|
-| VirtualBox|Virtualization|[https://www.virtualbox.org/](https://www.virtualbox.org/)|
-| Visual Studio Code|Code editor|[https://code.visualstudio.com/](https://code.visualstudio.com/)|
-| WPS Office for Linux | Productivity Tools | [https://www.wps.com/wps-office-for-linux/](https://www.wps.com/wps-office-for-linux/)|
-| XCA | Certificate Manager|[https://hohnstaedt.de/xca/](https://hohnstaedt.de/xca/)|
-| Yq |YAML processor|[https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64](https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64)|
-||||
+| Software               | Type                                                                               | Link                                                                                                                                                 |
+| ---------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Amass                  | In-depth Attack Surface Mapping and Asset Discovery                                | [https://github.com/OWASP/Amass](https://github.com/OWASP/Amass)                                                                                     |
+| AngryIP Scanner        | Network Scanner                                                                    | [https://angryip.org/](https://angryip.org/)                                                                                                         |
+| Azure CLI              | Command-line tools for Azure                                                       | [https://github.com/Azure/azure-cli](https://github.com/Azure/azure-cli)                                                                             |
+| Balena-etcher          | Image Writer                                                                       | [https://www.balena.io/etcher/](https://www.balena.io/etcher/)                                                                                       |
+| Ctop                   | Container process monitor                                                          | [https://github.com/bcicen/ctop](https://github.com/bcicen/ctop)                                                                                     |
+| Diodon                 | Clipboard Manager                                                                  | [https://launchpad.net/diodon](https://launchpad.net/diodon)                                                                                         |
+| Dive                   | Docker image explorer                                                              | [https://github.com/wagoodman/dive](https://github.com/wagoodman/dive)                                                                               |
+| Dockle                 | Container Image Linter for Security                                                | [https://github.com/goodwithtech/dockle](https://github.com/goodwithtech/dockle)                                                                     |
+| Double Commander       | File Manager                                                                       | [https://doublecmd.sourceforge.io/](https://doublecmd.sourceforge.io/)                                                                               |
+| Ffuf                   | Fast web fuzzer written in Go                                                      | [https://github.com/ffuf/ffuf](https://github.com/ffuf/ffuf)                                                                                         |
+| GitKraken              | Git Client                                                                         | [https://www.gitkraken.com/](https://www.gitkraken.com/)                                                                                             |
+| Google Chrome          | Browser                                                                            | [https://www.google.com/intl/pl_ALL/chrome/](https://www.google.com/intl/pl_ALL/chrome/)                                                             |
+| Google Cloud SDK       | Command-line tools for GCP                                                         | [https://cloud.google.com/sdk](https://cloud.google.com/sdk)                                                                                         |
+| Google Kubectl/Kubeadm | Kubernetes Manager                                                                 | [https://kubernetes.io/docs/reference/kubectl/overview/](https://kubernetes.io/docs/reference/kubectl/overview/)                                     |
+| Gping                  | Ping with a graph                                                                  | [https://github.com/orf/gping](https://github.com/orf/gping)                                                                                         |
+| Hadolint               | Docker linter                                                                      | [https://github.com/hadolint/hadolint](https://github.com/hadolint/hadolint)                                                                         |
+| Helm                   | Package manager for Kubernetes                                                     | [https://helm.sh/](https://helm.sh/)                                                                                                                 |
+| k3d                    | k3d creates containerized k3s clusters                                             | [https://k3d.io/](https://k3d.io/)                                                                                                                   |
+| k3s                    | Lightweight Kubernetes 5 less than k8s                                             | [https://k3s.io/](https://k3s.io/)                                                                                                                   |
+| k9s                    | Kubernetes CLI Manager                                                             | [https://github.com/derailed/k9s](https://github.com/derailed/k9s)                                                                                   |
+| Keepass                | Password Manager                                                                   | [https://keepass.info/](https://keepass.info/)                                                                                                       |
+| Kubeconform            | Kubernetes config validator                                                        | [https://github.com/yannh/kubeconform](https://github.com/yannh/kubeconform)                                                                         |
+| Kubent                 | Kubernetes-no-trouble                                                              | [https://github.com/doitintl/kube-no-trouble](https://github.com/doitintl/kube-no-trouble)                                                           |
+| Kubernetes             | Production-Grade Container Orchestration                                           | [https://kubernetes.io/](https://kubernetes.io/)                                                                                                     |
+| Kustomize              | Kubernetes customiser                                                              | [https://github.com/kubernetes-sigs/kustomize](https://github.com/kubernetes-sigs/kustomize)                                                         |
+| Lens                   | Kubernetes IDE                                                                     | [https://k8slens.dev/](https://k8slens.dev/)                                                                                                         |
+| Minikube               | Run Kubernetes locally                                                             | [https://github.com/kubernetes/minikube](https://github.com/kubernetes/minikube)                                                                     |
+| Packer                 | Image creator                                                                      | [https://www.packer.io/](https://www.packer.io/)                                                                                                     |
+| Packetsender           | Packet Sender can send and receive UDP, TCP, and SSL on the ports of your choosing | [https://packetsender.com/](https://packetsender.com/)                                                                                               |
+| Palemoon               | Browser alternative (Java\_+Flash)                                                 | [https://www.palemoon.org/](https://www.palemoon.org/)                                                                                               |
+| Polaris                | Validation of best practices in your Kubernetes clusters                           | [https://www.fairwinds.com/polaris](https://www.fairwinds.com/polaris)                                                                               |
+| RamboxOS               | Multi IM                                                                           | [https://github.com/TheGoddessInari/hamsket](https://github.com/TheGoddessInari/hamsket)                                                             |
+| Rancher Desktop        | Rancher Desktop runs Kubernetes and container management on your desktop           | [https://rancherdesktop.io/](https://rancherdesktop.io/)                                                                                             |
+| Redshift               | Monitor temperature changer                                                        | [http://jonls.dk/redshift/](http://jonls.dk/redshift/)                                                                                               |
+| Remmina                | Remote Connection Manager                                                          | [https://remmina.org/](https://remmina.org/)                                                                                                         |
+| Shutter                | Screenshot Manipulation                                                            | [http://shutter-project.org/](http://shutter-project.org/)                                                                                           |
+| Sops                   | Secrets manager                                                                    | [https://github.com/getsops/sops](https://github.com/getsops/sops)                                                                                   |
+| Synapse                | Symantic Launcher                                                                  | [https://launchpad.net/synapse-project](https://launchpad.net/synapse-project)                                                                       |
+| Tabby                  | Modern Terminal                                                                    | [https://github.com/Eugeny/terminus](https://github.com/Eugeny/terminus)                                                                             |
+| Teller                 | Secret manager                                                                     | [https://github.com/tellerops/teller](https://github.com/tellerops/teller)                                                                           |
+| Terraform              | Infrastructure as Code                                                             | [https://www.terraform.io/](https://www.terraform.io/)                                                                                               |
+| Vagrant                | Unified Workflow                                                                   | [https://www.vagrantup.com/](https://www.vagrantup.com/)                                                                                             |
+| Vault                  | Secrets Manager                                                                    | [https://www.vaultproject.io/](https://www.vaultproject.io/)                                                                                         |
+| VirtualBox             | Virtualization                                                                     | [https://www.virtualbox.org/](https://www.virtualbox.org/)                                                                                           |
+| Visual Studio Code     | Code editor                                                                        | [https://code.visualstudio.com/](https://code.visualstudio.com/)                                                                                     |
+| WPS Office for Linux   | Productivity Tools                                                                 | [https://www.wps.com/wps-office-for-linux/](https://www.wps.com/wps-office-for-linux/)                                                               |
+| XCA                    | Certificate Manager                                                                | [https://hohnstaedt.de/xca/](https://hohnstaedt.de/xca/)                                                                                             |
+| Yq                     | YAML processor                                                                     | [https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64](https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64) |
+|                        |                                                                                    |                                                                                                                                                      |
 
 ### Packages: Optional (not complete list)
 
-|Software|Type|Link|
-|------------------|--------|---------------------|
-| Brave Browser| Browser alternative|[Brave](https://brave.com/)|
-| DockbarX|Panel|[DockbarX](https://github.com/M7S/dockbarx)|
-| Enpass | Password manager | [Enpass](https://www.enpass.io/)|
-| GIMP | GNU Image Manipulation Program | [GIMP](https://www.gimp.org/)|
-| Insync |Googledrive & Onedrive linux client|[Insync](https://www.insynchq.com/)|
-| Kodi | Open Source Home Theater| [Kodi](https://kodi.tv/)|
-| Neofetch |A command-line system information tool written in bash 3.2+| [Neofetch](https://github.com/dylanaraps/neofetch)|
-| Pinta | Drawing/Image Editing| [Pinta](https://pinta-project.com/pintaproject/pinta/)|
-| Spotify | Music Player| [Spotify](https://www.spotify.com/pl/download/linux/)|
-| Steampipe| select * from cloud| [Steampipe](https://steampipe.io/)|
-| Sublime Text 3 | Text Editor | [Sublime Text](https://www.sublimetext.com/3)|
-| Betterbird | Email client | [Betterbird](https://www.betterbird.eu/)|
-| Trivy |A Simple and Comprehensive Vulnerability Scanner for Containers, Suitable for CI|[Trivy](https://github.com/aquasecurity/trivy)|
-| Veeam Agent for Linux | Backup tool| [Veeam](https://www.veeam.com)|
-| Veracrypt | Source disk encryption | [Veracrypt](https://www.veracrypt.fr/en/Home.html)|
+| Software              | Type                                                                             | Link                                                   |
+| --------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Brave Browser         | Browser alternative                                                              | [Brave](https://brave.com/)                            |
+| DockbarX              | Panel                                                                            | [DockbarX](https://github.com/M7S/dockbarx)            |
+| Enpass                | Password manager                                                                 | [Enpass](https://www.enpass.io/)                       |
+| GIMP                  | GNU Image Manipulation Program                                                   | [GIMP](https://www.gimp.org/)                          |
+| Insync                | Googledrive & Onedrive linux client                                              | [Insync](https://www.insynchq.com/)                    |
+| Kodi                  | Open Source Home Theater                                                         | [Kodi](https://kodi.tv/)                               |
+| Neofetch              | A command-line system information tool written in bash 3.2+                      | [Neofetch](https://github.com/dylanaraps/neofetch)     |
+| Pinta                 | Drawing/Image Editing                                                            | [Pinta](https://pinta-project.com/pintaproject/pinta/) |
+| Spotify               | Music Player                                                                     | [Spotify](https://www.spotify.com/pl/download/linux/)  |
+| Steampipe             | select \* from cloud                                                             | [Steampipe](https://steampipe.io/)                     |
+| Sublime Text 3        | Text Editor                                                                      | [Sublime Text](https://www.sublimetext.com/3)          |
+| Betterbird            | Email client                                                                     | [Betterbird](https://www.betterbird.eu/)               |
+| Trivy                 | A Simple and Comprehensive Vulnerability Scanner for Containers, Suitable for CI | [Trivy](https://github.com/aquasecurity/trivy)         |
+| Veeam Agent for Linux | Backup tool                                                                      | [Veeam](https://www.veeam.com)                         |
+| Veracrypt             | Source disk encryption                                                           | [Veracrypt](https://www.veracrypt.fr/en/Home.html)     |
 
 ||||
 
 ### Packages: Flatpak
 
-|Software|Type|Link|
-|---|---|---|
-|Bitwarden|Password Manager|[Bitwarden](https://bitwarden.com/%29)|
-|Boxes|Virtualization|[Boxes](https://wiki.gnome.org/Apps/Boxes%29)|
-|Brave|Web Browser|[Brave](https://brave.com/%29)|
-|EasyEffects|Audio Effects Tool|[EasyEffects](https://github.com/wwmm/easyeffects%29)|
-|Enpass|Password Manager|[Enpass](https://www.enpass.io/%29)|
-|Firefox|Web Browser|[Firefox](https://www.mozilla.org/en-US/firefox/new/%29)|
-|Flatseal|Permissions Manager|[Flatseal](https://flathub.org/apps/details/com.github.tchx84.Flatseal%29)|
-|FreeFileSync|File Synchronization|[FreeFileSync](https://freefilesync.org/%29)|
-|GIMP|Image Editor|GIMP|
-|Headlamp|Kubernetes Dashboard|[Headlamp](https://kinvolk.io/headlamp/%29)|
-|Kdenlive|Video Editor|[Kdenlive](https://kdenlive.org/%29)|
-|Kodi|Media Center|[Kodi](https://kodi.tv/%29)|
-|Krita|Digital Painting|[Krita](https://krita.org/%29)|
-|LibreOffice|Office Suite|[LibreOffice](https://www.libreoffice.org/%29)|
-|MissionCenter|Project Management|[MissionCenter](https://missioncenter.io/%29)|
-|Obsidian|Note-taking App|[Obsidian](https://obsidian.md/%29)|
-|Pinta|Image Editor|[Pinta](https://pinta-project.com/%29)|
-|Raspberry Pi Imager|Raspberry Pi Image Writer|[Raspberry Pi Imager](https://www.raspberrypi.org/software/%29)|
-|Remmina|Remote Desktop Client|[Remmina](https://remmina.org/%29)|
-|Spotify|Music Streaming|[Spotify](https://www.spotify.com/%29)|
-|Sublime Text|Text Editor|[Sublime Text](https://www.sublimetext.com/%29)|
-|VLC|Media Player|[VLC](https://www.videolan.org/vlc/%29)|
-|Vivaldi|Web Browser|[Vivaldi](https://vivaldi.com/%29)|
-|WPS Office|Office Suite|[WPS Office](https://www.wps.com/%29)|
-|Zenmap|Network Scanner|[Zenmap](https://nmap.org/zenmap/%29)|
-|Zoom|Video Conferencing|[Zoom](https://zoom.us/%29)|
+| Software            | Type                      | Link                                                                       |
+| ------------------- | ------------------------- | -------------------------------------------------------------------------- |
+| Bitwarden           | Password Manager          | [Bitwarden](https://bitwarden.com/%29)                                     |
+| Boxes               | Virtualization            | [Boxes](https://wiki.gnome.org/Apps/Boxes%29)                              |
+| Brave               | Web Browser               | [Brave](https://brave.com/%29)                                             |
+| EasyEffects         | Audio Effects Tool        | [EasyEffects](https://github.com/wwmm/easyeffects%29)                      |
+| Enpass              | Password Manager          | [Enpass](https://www.enpass.io/%29)                                        |
+| Firefox             | Web Browser               | [Firefox](https://www.mozilla.org/en-US/firefox/new/%29)                   |
+| Flatseal            | Permissions Manager       | [Flatseal](https://flathub.org/apps/details/com.github.tchx84.Flatseal%29) |
+| FreeFileSync        | File Synchronization      | [FreeFileSync](https://freefilesync.org/%29)                               |
+| GIMP                | Image Editor              | GIMP                                                                       |
+| Headlamp            | Kubernetes Dashboard      | [Headlamp](https://kinvolk.io/headlamp/%29)                                |
+| Kdenlive            | Video Editor              | [Kdenlive](https://kdenlive.org/%29)                                       |
+| Kodi                | Media Center              | [Kodi](https://kodi.tv/%29)                                                |
+| Krita               | Digital Painting          | [Krita](https://krita.org/%29)                                             |
+| LibreOffice         | Office Suite              | [LibreOffice](https://www.libreoffice.org/%29)                             |
+| MissionCenter       | Project Management        | [MissionCenter](https://missioncenter.io/%29)                              |
+| Obsidian            | Note-taking App           | [Obsidian](https://obsidian.md/%29)                                        |
+| Pinta               | Image Editor              | [Pinta](https://pinta-project.com/%29)                                     |
+| Raspberry Pi Imager | Raspberry Pi Image Writer | [Raspberry Pi Imager](https://www.raspberrypi.org/software/%29)            |
+| Remmina             | Remote Desktop Client     | [Remmina](https://remmina.org/%29)                                         |
+| Spotify             | Music Streaming           | [Spotify](https://www.spotify.com/%29)                                     |
+| Sublime Text        | Text Editor               | [Sublime Text](https://www.sublimetext.com/%29)                            |
+| VLC                 | Media Player              | [VLC](https://www.videolan.org/vlc/%29)                                    |
+| Vivaldi             | Web Browser               | [Vivaldi](https://vivaldi.com/%29)                                         |
+| WPS Office          | Office Suite              | [WPS Office](https://www.wps.com/%29)                                      |
+| Zenmap              | Network Scanner           | [Zenmap](https://nmap.org/zenmap/%29)                                      |
+| Zoom                | Video Conferencing        | [Zoom](https://zoom.us/%29)                                                |
 
 ### Packages: npm
 
-|Software|Type|Link|
-|------------------|--------|---------------------|
-|Dockerfilelint|Dockerfile linter|[https://github.com/replicatedhq/dockerfilelint](https://github.com/replicatedhq/dockerfilelint)|
-||||
+| Software       | Type              | Link                                                                                             |
+| -------------- | ----------------- | ------------------------------------------------------------------------------------------------ |
+| Dockerfilelint | Dockerfile linter | [https://github.com/replicatedhq/dockerfilelint](https://github.com/replicatedhq/dockerfilelint) |
+|                |                   |                                                                                                  |
 
 ## Tasks
 
-|Task|Description|Link|
-|----|-----------|----|
-|install_yubico_software|Install keys, repositories, packages and dekstop files for Yubico infrastructure|[https://yubico.com](https://yubico.com)|
-|configure_zsh|Installs files required by zsh, `oh-my-zsh` and `powerlevel10k`|[https://github.com/ohmyzsh/ohmyzsh](https://github.com/ohmyzsh/ohmyzsh) [https://github.com/romkatv/powerlevel10k](https://github.com/romkatv/powerlevel10k)|
-|steampipe_plugins.yaml|Install steampipe plugins | [https://steampipe.io/](https://steampipe.io/)|
-|configure_neofetch|Installs and configures neofetch|[https://github.com/dylanaraps/neofetch](https://github.com/dylanaraps/neofetch)|
-||||
+| Task                    | Description                                                                      | Link                                                                                                                                                          |
+| ----------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| install_yubico_software | Install keys, repositories, packages and dekstop files for Yubico infrastructure | [https://yubico.com](https://yubico.com)                                                                                                                      |
+| configure_zsh           | Installs files required by zsh, `oh-my-zsh` and `powerlevel10k`                  | [https://github.com/ohmyzsh/ohmyzsh](https://github.com/ohmyzsh/ohmyzsh) [https://github.com/romkatv/powerlevel10k](https://github.com/romkatv/powerlevel10k) |
+| steampipe_plugins.yaml  | Install steampipe plugins                                                        | [https://steampipe.io/](https://steampipe.io/)                                                                                                                |
+| configure_neofetch      | Installs and configures neofetch                                                 | [https://github.com/dylanaraps/neofetch](https://github.com/dylanaraps/neofetch)                                                                              |
+|                         |                                                                                  |                                                                                                                                                               |
 
 ### 'configure_neofetch` task
 
@@ -471,8 +473,8 @@ neofetch:
     - Disk
     - Local IP
   toggle_items:
-    - key: 'color_blocks'
-      value: 'off'
+    - key: "color_blocks"
+      value: "off"
 ```
 
 Explanation of Configuration Parameters:
@@ -487,24 +489,24 @@ Explanation of Configuration Parameters:
 
   ```yaml
   remove_lines:
-  - Packages
-  - Resolution
+    - Packages
+    - Resolution
   ```
 
 - `add_lines`: Similar to remove_lines, but these items will be uncommented if they were previously commented out, ensuring they are active in the Neofetch output.
 
-    ```yaml
-    add_lines:
+  ```yaml
+  add_lines:
     - Disk
     - Local IP
-    ```
+  ```
 
 - `toggle_items`: This section allows for toggling specific key-value pairs within the configuration file. For example, changing color_blocks from "on" to "off" or vice versa.
 
   ```yaml
   toggle_items:
-  - key: 'color_blocks'
-    value: 'off'
+    - key: "color_blocks"
+      value: "off"
   ```
 
 ## Startup applications
@@ -578,6 +580,7 @@ Some applications are copied to `autostart` folder
   ```
 
 - Playbook exits with a message `Could not import python modules: apt, apt_pkg. Please install python3-apt package`
+
   - Resolution: set `ansible_python_interpreter=/usr/bin/python3`
 
 - Older distros have problem with some repositories, using PKI part that wasn't part of a ca-certificates.

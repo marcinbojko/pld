@@ -1,10 +1,13 @@
 # Tasks for initial steps - time sync, remove obsolete repositories, files, keys, packages
+
 - name: Make sure timesyncd is installed
   ansible.builtin.apt:
     name: systemd-timesyncd
     state: present
     update_cache: false
-    allow_unauthenticated: true
+    # checkov:skip=CKV_ANSIBLE_5
+    # Reason: This task force parameters is required in case of pre-system errors
+    allow_unauthenticated: false
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"
   register: r_systemd_timesyncd

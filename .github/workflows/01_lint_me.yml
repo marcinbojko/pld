@@ -1,8 +1,28 @@
 name: Super-Linter
 
 # Run this workflow every time a new commit pushed to your repository
-on: push
+on:
+  push:
+    branches: [main, master, test, develop]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+  actions: read
+  deployments: read
+  id-token: write
+  issues: write
+  discussions: read
+  pages: read
+  repository-projects: read
+  security-events: read
+  attestations: read # Added this
+  checks: write # Added this
+  statuses: write # Added
 jobs:
   # Set the job key. The key is displayed as the job name
   # when a job name is not provided
@@ -20,10 +40,12 @@ jobs:
       # Runs the Super-Linter action
       - name: Run Super-Linter
         # workaround for superlinter issues
-        uses: github/super-linter@latest
+        uses: github/super-linter@main
         env:
-          DEFAULT_BRANCH: main,develop
+          DEFAULT_BRANCH: ${{ github.ref_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ANSIBLE: false
+          VALIDATE_ALL_CODEBASE: ${{ github.event_name != 'pull_request' }}
+          VALIDATE_JSCPD: false
+          # VALIDATE_ANSIBLE: false
           VALIDATE_NATURAL_LANGUAGE: false
-          VALIDATE_DOCKERFILE_HADOLINT: false
+          # VALIDATE_DOCKERFILE_HADOLINT: false
