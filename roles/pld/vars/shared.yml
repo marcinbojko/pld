@@ -139,13 +139,13 @@ pld_deb822_repositories:
     signed_by: https://apt.releases.hashicorp.com/gpg
   - name: helm-stable-debian
     types: deb
-    suites: all
+    suites: any
     components: main
     uris:
-      - "https://baltocdn.com/helm/stable/debian/"
+      - "https://packages.buildkite.com/helm-linux/helm-debian/any/"
     enabled: true
     architectures: amd64
-    signed_by: https://baltocdn.com/helm/signing.asc
+    signed_by: https://packages.buildkite.com/helm-linux/helm-debian/gpgkey
   - name: trippy
     types: deb
     suites: noble
@@ -208,7 +208,7 @@ pld_repositories_remove:
     codename: impish
   - repo: ppa:libreoffice/ppa
     filename: libreoffice
-  - repo: deb [arch=amd64] https://download.opensuse.org/repositories/home:/stevenpusser/xUbuntu_22.04/ /
+  - repo: deb [arch=amd64] https://wmlive.rumbero.org/repo/pool/main/p/palemoon/ /
     filename: palemoon
   - repo: deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ noble main
     filename: azure-cli
@@ -291,7 +291,6 @@ pld_files_remove:
   - path: /etc/apt/sources.list.d/azure-cli.list
   - path: /etc/apt/sources.list.d/docker-stable.list
   - path: /etc/apt/sources.list.d/gcsfuse.list
-  - path: /etc/apt/sources.list.d/google-chrome.list
   - path: /etc/apt/sources.list.d/google-cloud-sdk.list
   - path: /etc/apt/sources.list.d/shutter-next.list
   - path: /etc/apt/sources.list.d/virtualbox.list
@@ -328,7 +327,6 @@ pld_files_remove_bin_path:
   - name: vault
   - name: consul
   - name: helm
-  - name: ngrok
   - name: k9s
   - name: docker-compose
   - name: ffluf
@@ -543,20 +541,20 @@ pld_packages_veeam:
   - veeam
 pld_deb:
   - https://release.gitkraken.com/linux/gitkraken-amd64.deb
-  - https://github.com/angryip/ipscan/releases/download/3.9.1/ipscan_3.9.1_amd64.deb
-  - https://github.com/Eugeny/tabby/releases/download/v1.0.215/tabby-1.0.215-linux-x64.deb
-  - https://github.com/kubernetes/minikube/releases/download/v1.34.0/minikube_1.34.0-0_amd64.deb
+  - https://github.com/angryip/ipscan/releases/download/3.9.3/ipscan_3.9.3_amd64.deb
+  - https://github.com/Eugeny/tabby/releases/download/v1.0.228/tabby-1.0.228-linux-x64.deb
+  - https://github.com/kubernetes/minikube/releases/download/v1.37.0/minikube_1.37.0-0_amd64.deb
   - https://github.com/wagoodman/dive/releases/download/v0.12.0/dive_0.12.0_linux_amd64.deb
-  - https://github.com/balena-io/etcher/releases/download/v1.19.25/balena-etcher_1.19.25_amd64.deb
+  - https://github.com/balena-io/etcher/releases/download/v2.1.4/balena-etcher_2.1.4_amd64.deb
   - https://github.com/goodwithtech/dockle/releases/download/v0.4.14/dockle_0.4.14_Linux-64bit.deb
   - https://github.com/kaikramer/keystore-explorer/releases/download/v5.5.3/kse_5.5.3_all.deb
-  - https://github.com/aquasecurity/kube-bench/releases/download/v0.9.2/kube-bench_0.9.2_linux_amd64.deb
-  - https://github.com/anchore/syft/releases/download/v1.15.0/syft_1.15.0_linux_amd64.deb
-  - https://github.com/turbot/steampipe/releases/download/v1.0.0/steampipe_linux_amd64.deb
-  - https://github.com/ramboxapp/download/releases/download/v2.4.1/Rambox-2.4.1-linux-x64.deb
-  - https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.deb
-  - https://github.com/getsops/sops/releases/download/v3.9.1/sops_3.9.1_amd64.deb
-  - https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin_18.2.0_amd64.deb
+  - https://github.com/aquasecurity/kube-bench/releases/download/v0.14.1/kube-bench_0.14.1_linux_amd64.deb
+  - https://github.com/anchore/syft/releases/download/v1.33.0/syft_1.33.0_linux_amd64.deb
+  - https://github.com/turbot/steampipe/releases/download/v2.2.0/steampipe_linux_amd64.deb
+  - https://github.com/ramboxapp/download/releases/download/v2.5.2/Rambox-2.5.2-linux-x64.deb
+  - https://github.com/derailed/k9s/releases/download/v0.50.12/k9s_linux_amd64.deb
+  - https://github.com/getsops/sops/releases/download/v3.11.0/sops_3.11.0_amd64.deb
+  - https://github.com/atuinsh/atuin/releases/download/v18.10.0/atuin_18.10.0_amd64.deb
   - https://cdn.insynchq.com/builds/linux/3.9.4.60020/insync_3.9.4.60020-noble_amd64.deb
   - https://dl.waveterm.dev/releases-w2/waveterm-linux-amd64-0.9.1.deb
 pld_flatpak:
@@ -638,12 +636,12 @@ pld_unpack:
     source: amass
     folder: amass_Linux_amd64
     destination_file: amass.zip
-  - url: https://github.com/yannh/kubeconform/releases/download/v0.6.4/kubeconform-linux-amd64.tar.gz
+  - url: https://github.com/yannh/kubeconform/releases/download/v0.7.0/kubeconform-linux-amd64.tar.gz
     destination: kubeconform
     source: kubeconform
     folder:
     destination_file: kubeconform-linux-amd64.tar.gz
-  - url: https://github.com/terraform-linters/tflint/releases/download/v0.54.0/tflint_linux_amd64.zip
+  - url: https://github.com/terraform-linters/tflint/releases/download/v0.60.1/tflint_linux_amd64.zip
     destination: tflint
     source: tflint
     destination_file: tflint.zip
@@ -658,27 +656,27 @@ pld_unpack:
     source: krew-linux_amd64
     destination_file: krew-linux_amd64.tar.gz
     folder:
-  - url: https://github.com/containerd/nerdctl/releases/download/v2.0.0/nerdctl-2.0.0-linux-amd64.tar.gz
+  - url: https://github.com/containerd/nerdctl/releases/download/v2.1.1/nerdctl-2.1.1-linux-amd64.tar.gz
     destination: nerdctl
     source: nerdctl
     destination_file: nerdctl-linux-amd64.tar.gz
     folder:
-  - url: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.5.0/kustomize_v5.5.0_linux_amd64.tar.gz
+  - url: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.8.0/kustomize_v5.8.0_linux_amd64.tar.gz
     destination: kustomize
     source: kustomize
     destination_file: kustomize.tar.gz
     folder:
-  - url: https://github.com/doitintl/kube-no-trouble/releases/download/nightly-0.7.3-35-g1afe0af/kubent-nightly-0.7.3-35-g1afe0af-linux-amd64.tar.gz
+  - url: https://github.com/doitintl/kube-no-trouble/releases/download/0.7.3/kubent-0.7.3-linux-amd64.tar.gz
     destination: kubent
     source: kubent
     destination_file: kubent.tar.gz
     folder:
-  - url: https://github.com/nektos/act/releases/download/v0.2.69/act_Linux_x86_64.tar.gz
+  - url: https://github.com/nektos/act/releases/download/v0.2.83/act_Linux_x86_64.tar.gz
     destination: act
     source: act
     destination_file: act_Linux_x86_64.tar.gz
     folder:
-  - url: https://github.com/eza-community/eza/releases/download/v0.20.8/eza_x86_64-unknown-linux-gnu.tar.gz
+  - url: https://github.com/eza-community/eza/releases/download/v0.23.4/eza_x86_64-unknown-linux-gnu.tar.gz
     destination: eza
     source: eza
     destination_file: eza_x86_64-unknown-linux-gnu.tar.gz
@@ -697,13 +695,13 @@ pld_downloads:
   - url: https://github.com/ffuf/ffuf/releases/download/v2.1.0/ffuf_2.1.0_linux_amd64.tar.gz
     destination: ffuf
     skip_tree: false
-  - url: https://github.com/FairwindsOps/polaris/releases/download/9.6.0/polaris_linux_amd64.tar.gz
+  - url: https://github.com/FairwindsOps/polaris/releases/download/9.6.3/polaris_linux_amd64.tar.gz
     destination: polaris
     skip_tree: false
-  - url: https://github.com/orf/gping/releases/download/gping-v1.18.0/gping-Linux-x86_64.tar.gz
+  - url: https://github.com/orf/gping/releases/download/gping-v1.20.1/gping-Linux-x86_64.tar.gz
     destination: gping
     skip_tree: false
-  - url: https://github.com/jesseduffield/lazydocker/releases/download/v0.23.3/lazydocker_0.23.3_Linux_x86_64.tar.gz
+  - url: https://github.com/jesseduffield/lazydocker/releases/download/v0.24.3/lazydocker_0.24.3_Linux_x86_64.tar.gz
     destination: lazydocker
     skip_tree: false
   - url: https://github.com/axiomhq/cli/releases/download/v0.14.0/axiom_0.14.0_linux_amd64.tar.gz
@@ -715,21 +713,21 @@ pld_files:
   - url: https://github.com/dannagle/PacketSender/releases/download/v8.6.5/Packet_Sender_v8.6.5-x86_64.AppImage
     destination: packetsender
     desktop_file: ./files/apps/packetsender/packetsender.desktop
-  - url: https://github.com/k3s-io/k3s/releases/download/v1.31.2%2Bk3s1/k3s
+  - url: https://github.com/k3s-io/k3s/releases/download/v1.34.2%2Bk3s1/k3s
     destination: k3s
-  - url: https://github.com/k3d-io/k3d/releases/download/v5.7.0/k3d-linux-amd64
+  - url: https://github.com/k3d-io/k3d/releases/download/v5.8.3/k3d-linux-amd64
     destination: k3d
-  - url: https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
+  - url: https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-Linux-x86_64
     destination: hadolint
   - url: https://github.com/alexellis/k3sup/releases/download/0.13.6/k3sup
     destination: k3sup
-  - url: https://github.com/argoproj/argo-cd/releases/download/v2.12.7/argocd-linux-amd64
+  - url: https://github.com/argoproj/argo-cd/releases/download/v2.14.20/argocd-linux-amd64
     destination: argocd
-  - url: https://github.com/mikefarah/yq/releases/download/v4.44.5/yq_linux_amd64
+  - url: https://github.com/mikefarah/yq/releases/download/v4.49.1/yq_linux_amd64
     destination: yq
   - url: https://github.com/patrickvane/shfmt/releases/download/master/shfmt_linux_amd64
     destination: shfmt
-  - url: https://github.com/danielfoehrKn/kubeswitch/releases/download/0.9.2/switcher_linux_amd64
+  - url: https://github.com/danielfoehrKn/kubeswitch/releases/download/0.9.3/switcher_linux_amd64
     destination: switcher
 pld_ansible:
   cfg: /etc/ansible/ansible.cfg

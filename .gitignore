@@ -54,3 +54,5 @@
 */.cache*
 .cache*
 .vscode/
+Claude.md
+.claude/

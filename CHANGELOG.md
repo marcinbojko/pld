@@ -1,5 +1,35 @@
 # Changelog "prepare_linux_desktop" ansible role
 
+## Version 1.2.0 [2025-12-27]
+
+- [DEB] upgraded `ipscan` to version 3.9.3
+- [DEB] upgraded `tabby` to version 1.0.228
+- [DEB] upgraded `minikube` to version 1.37.0
+- [DEB] upgraded `balena-etcher` to version 2.1.4
+- [DEB] upgraded `kube-bench` to version 0.14.1
+- [DEB] upgraded `syft` to version 1.33.0
+- [DEB] upgraded `steampipe` to version 2.2.0
+- [DEB] upgraded `rambox` to version 2.5.2
+- [DEB] upgraded `k9s` to version 0.50.12
+- [DEB] upgraded `sops` to version 3.11.0
+- [DEB] upgraded `atuin` to version 18.10.0
+- [PACKAGES] upgraded `kubeconform` to version 0.7.0
+- [PACKAGES] upgraded `tflint` to version 0.60.1
+- [PACKAGES] upgraded `nerdctl` to version 2.1.1
+- [PACKAGES] upgraded `kustomize` to version 5.8.0
+- [PACKAGES] upgraded `kubent` to stable version 0.7.3
+- [PACKAGES] upgraded `act` to version 0.2.83
+- [PACKAGES] upgraded `eza` to version 0.23.4
+- [PACKAGES] upgraded `polaris` to version 9.6.3
+- [PACKAGES] upgraded `gping` to version 1.20.1
+- [PACKAGES] upgraded `lazydocker` to version 0.24.3
+- [PACKAGES] upgraded `k3s` to version 1.34.2+k3s1
+- [PACKAGES] upgraded `k3d` to version 5.8.3
+- [PACKAGES] upgraded `hadolint` to version 2.14.0
+- [PACKAGES] upgraded `yq` to version 4.49.1
+- [PACKAGES] upgraded `kubeswitch` to version 0.9.3
+- [PACKAGES] upgraded `argocd` to version 2.14.20
+
 ## Version 1.1.1 [2024-11-17]
 
 - [PACKAGES] added `shfmt` -[https://github.com/patrickvane/shfmt](https://github.com/patrickvane/shfmt)
