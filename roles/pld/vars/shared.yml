@@ -17,9 +17,9 @@ pld_deb822_repositories:
     suites: "/"
     components: []
     uris:
-      - "http://download.opensuse.org/repositories/home:/stevenpusser:/palemoon-GTK3/xUbuntu_23.10/"
+      - "http://download.opensuse.org/repositories/home:/stevenpusser/xUbuntu_24.04/"
     enabled: true
-    signed_by: https://download.opensuse.org/repositories/home:/stevenpusser/xUbuntu_23.10/Release.key
+    signed_by: https://download.opensuse.org/repositories/home:stevenpusser/xUbuntu_24.04/Release.key
   - name: azure-cli
     types: deb
     suites: "{{ pld_codename }}"
@@ -137,15 +137,16 @@ pld_deb822_repositories:
     enabled: true
     architectures: amd64
     signed_by: https://apt.releases.hashicorp.com/gpg
-  - name: helm-stable-debian
-    types: deb
-    suites: any
-    components: main
-    uris:
-      - "https://packages.buildkite.com/helm-linux/helm-debian/any/"
-    enabled: true
-    architectures: amd64
-    signed_by: https://packages.buildkite.com/helm-linux/helm-debian/gpgkey
+  # Note: Helm is installed via HashiCorp repository (see hashicorp repo below)
+  # - name: helm-stable-debian
+  #   types: deb
+  #   suites: all
+  #   components: main
+  #   uris:
+  #     - "https://baltocdn.com/helm/stable/debian/"
+  #   enabled: true
+  #   architectures: amd64
+  #   signed_by: https://baltocdn.com/helm/signing.asc
   - name: trippy
     types: deb
     suites: noble
@@ -698,7 +699,7 @@ pld_downloads:
   - url: https://github.com/FairwindsOps/polaris/releases/download/9.6.3/polaris_linux_amd64.tar.gz
     destination: polaris
     skip_tree: false
-  - url: https://github.com/orf/gping/releases/download/gping-v1.20.1/gping-Linux-x86_64.tar.gz
+  - url: https://github.com/orf/gping/releases/download/gping-v1.20.1/gping_1.20.1_linux_x86_64.tar.gz
     destination: gping
     skip_tree: false
   - url: https://github.com/jesseduffield/lazydocker/releases/download/v0.24.3/lazydocker_0.24.3_Linux_x86_64.tar.gz

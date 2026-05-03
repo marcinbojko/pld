@@ -2,6 +2,10 @@
 
 ## Version 1.2.0 [2025-12-27]
 
+- [BUGFIX] fixed `palemoon` repository to use home:stevenpusser instead of home:stevenpusser:palemoon-GTK3
+- [BUGFIX] fixed `palemoon` repository URL to xUbuntu_24.04 (was xUbuntu_23.10)
+- [BUGFIX] disabled invalid `helm-stable-debian` repository (Helm installed via HashiCorp repo)
+- [BUGFIX] fixed `gping` download filename format (gping_1.20.1_linux_x86_64.tar.gz)
 - [DEB] upgraded `ipscan` to version 3.9.3
 - [DEB] upgraded `tabby` to version 1.0.228
 - [DEB] upgraded `minikube` to version 1.37.0
