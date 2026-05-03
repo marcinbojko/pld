@@ -1,0 +1,7 @@
+ansible-core>=2.19
+molecule>=25.7
+molecule-plugins>=25.8
+ansible-lint>=25.12
+yamllint>=1.37
+proxmoxer>=2.0
+requests>=2.31

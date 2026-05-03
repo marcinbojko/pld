@@ -1,0 +1,46 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+    ignore-certs: true
+    ignore-errors: true
+
+driver:
+  name: default
+
+platforms:
+  - name: mint22-0
+  - name: mint22-2
+
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_ROLES_PATH: "${MOLECULE_PROJECT_DIRECTORY}/roles"
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+      any_errors_fatal: false
+      host_key_checking: false
+  connection_options:
+    ansible_user: "${PROXMOX_VM_USER}"
+    ansible_password: "${PROXMOX_VM_PASSWORD}"
+    ansible_become: true
+    ansible_become_password: "${PROXMOX_VM_PASSWORD}"
+  inventory:
+    hosts:
+      all:
+        hosts:
+          mint22-0:
+            ansible_host: "${PROXMOX_VM_167_HOST}"
+            proxmox_vmid: 167
+          mint22-2:
+            ansible_host: "${PROXMOX_VM_153_HOST}"
+            proxmox_vmid: 153
+  playbooks:
+    create: create.yml
+    destroy: destroy.yml
+    converge: ../default/converge.yml
+
+verifier:
+  name: ansible

@@ -87,6 +87,25 @@
     enabled: "{{ item.enabled | default('true') }}"
     signed_by: "{{ item.signed_by | default('null') }}"
     architectures: "{{ item.architectures | default('') }}"
+    state: "{{ item.state | default('absent') }}"
+  loop: "{{ pld_deb822_repositories }}"
+  changed_when: false
+  tags:
+    - repositories
+    - base
+    - deb822
+
+- name: Add basic repositories as deb822 format
+  ansible.builtin.deb822_repository:
+    name: "{{ item.name }}"
+    types: "{{ item.types | default('deb') }}"
+    suites: "{{ item.suites | default('/') }}"
+    components: "{{ item.components | default(' ') }}"
+    uris: "{{ item.uris }}"
+    enabled: "{{ item.enabled | default('true') }}"
+    signed_by: "{{ item.signed_by | default('null') }}"
+    architectures: "{{ item.architectures | default('') }}"
+    state: present
   loop: "{{ pld_deb822_repositories }}"
   register: r_repositories
   until: r_repositories is success
@@ -106,6 +125,27 @@
     enabled: "{{ item.enabled | default('true') }}"
     signed_by: "{{ item.signed_by | default('null') }}"
     architectures: "{{ item.architectures | default('') }}"
+    state: "{{ item.state | default('absent') }}"
+  loop: "{{ custom_repositories }}"
+  when: custom_repositories is defined and custom_repositories | length > 0
+  changed_when: false
+  tags:
+    - repositories
+    - base
+    - deb822
+    - custom
+
+- name: Add custom repositories as deb822 format
+  ansible.builtin.deb822_repository:
+    name: "{{ item.name }}"
+    types: "{{ item.types | default('deb') }}"
+    suites: "{{ item.suites | default('/') }}"
+    components: "{{ item.components | default(' ') }}"
+    uris: "{{ item.uris }}"
+    enabled: "{{ item.enabled | default('true') }}"
+    signed_by: "{{ item.signed_by | default('null') }}"
+    architectures: "{{ item.architectures | default('') }}"
+    state: present
   register: r_custom_repositories
   until: r_custom_repositories is success
   loop: "{{ custom_repositories }}"

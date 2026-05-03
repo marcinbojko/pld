@@ -46,6 +46,16 @@
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
+### act (local GitHub Actions runner) ###
+.github/act/*.secrets
+.github/act/*.env
+.env
+.env.*
+
+### Python ###
+__pycache__/
+*.py[cod]
+
 *.retry
 *.out
 *.html
@@ -54,3 +64,5 @@
 */.cache*
 .cache*
 .vscode/
+Claude.md
+.claude/

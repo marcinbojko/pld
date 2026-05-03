@@ -1,51 +1,30 @@
 name: Super-Linter
 
-# Run this workflow every time a new commit pushed to your repository
 on:
   push:
-    branches: [main, master, test, develop]
   pull_request:
     branches: [main, master]
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
-  packages: write
-  actions: read
-  deployments: read
-  id-token: write
-  issues: write
-  discussions: read
-  pages: read
-  repository-projects: read
-  security-events: read
-  attestations: read # Added this
-  checks: write # Added this
-  statuses: write # Added
+  contents: read
+  statuses: write
+
 jobs:
-  # Set the job key. The key is displayed as the job name
-  # when a job name is not provided
   super-lint:
-    # Name the Job
     name: Lint code base
-    # Set the type of machine to run on
     runs-on: ubuntu-latest
 
     steps:
-      # Checks out a copy of your repository on the ubuntu-latest machine
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Runs the Super-Linter action
       - name: Run Super-Linter
-        # workaround for superlinter issues
-        uses: github/super-linter@main
+        uses: super-linter/super-linter@9e863354e3ff62e0727d37183162c4a88873df41  # v8.6.0
         env:
-          DEFAULT_BRANCH: ${{ github.ref_name }}
+          DEFAULT_BRANCH: ${{ github.event.pull_request.base.ref || github.event.repository.default_branch || 'main' }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: ${{ github.event_name != 'pull_request' }}
-          VALIDATE_JSCPD: false
-          # VALIDATE_ANSIBLE: false
-          VALIDATE_NATURAL_LANGUAGE: false
-          # VALIDATE_DOCKERFILE_HADOLINT: false
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_YAML: true

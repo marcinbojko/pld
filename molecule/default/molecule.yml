@@ -1,0 +1,27 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+    ignore-certs: true
+    ignore-errors: true
+
+driver:
+  name: default
+
+platforms:
+  - name: instance
+
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_ROLES_PATH: "${MOLECULE_PROJECT_DIRECTORY}/roles"
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+      any_errors_fatal: false
+  playbooks:
+    converge: converge.yml
+
+verifier:
+  name: ansible

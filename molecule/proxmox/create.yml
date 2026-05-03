@@ -1,0 +1,33 @@
+---
+- name: Create Proxmox snapshots before converge
+  hosts: localhost
+  gather_facts: false
+  vars:
+    snapshot_name: "molecule-before"
+    proxmox_api: &proxmox_api
+      api_host: "{{ lookup('env', 'PROXMOX_HOST') }}"
+      api_port: "{{ lookup('env', 'PROXMOX_PORT') | int }}"
+      api_user: "{{ lookup('env', 'PROXMOX_API_USER') }}"
+      api_token_id: "{{ lookup('env', 'PROXMOX_TOKEN_ID') }}"
+      api_token_secret: "{{ lookup('env', 'PROXMOX_TOKEN_SECRET') }}"
+      validate_certs: false
+
+  tasks:
+    - name: Remove stale molecule snapshot if present
+      community.proxmox.proxmox_snap:
+        <<: *proxmox_api
+        vmid: "{{ item }}"
+        snapname: "{{ snapshot_name }}"
+        state: absent
+      loop: [153, 167]
+      ignore_errors: true
+
+    - name: Create snapshot
+      community.proxmox.proxmox_snap:
+        <<: *proxmox_api
+        vmid: "{{ item }}"
+        snapname: "{{ snapshot_name }}"
+        description: "Created by molecule before converge"
+        state: present
+        timeout: 120
+      loop: [153, 167]

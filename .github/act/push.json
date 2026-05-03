@@ -1,0 +1,24 @@
+{
+  "ref": "refs/heads/main",
+  "before": "0000000000000000000000000000000000000000",
+  "after": "0000000000000000000000000000000000000001",
+  "forced": false,
+  "repository": {
+    "name": "prepare_linux_desktop",
+    "full_name": "ansible102/prepare_linux_desktop",
+    "private": false,
+    "default_branch": "main"
+  },
+  "pusher": {
+    "name": "mbojko",
+    "email": "marcinbojko.pl@gmail.com"
+  },
+  "head_commit": {
+    "id": "0000000000000000000000000000000000000001",
+    "message": "test push",
+    "author": {
+      "name": "mbojko",
+      "email": "marcinbojko.pl@gmail.com"
+    }
+  }
+}
