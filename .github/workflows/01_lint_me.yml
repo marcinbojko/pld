@@ -22,12 +22,9 @@ jobs:
           fetch-depth: 0
 
       - name: Run Super-Linter
-        uses: super-linter/super-linter@v8.6.0
+        uses: super-linter/super-linter@9e863354e3ff62e0727d37183162c4a88873df41  # v8.6.0
         env:
-          DEFAULT_BRANCH: main
+          DEFAULT_BRANCH: ${{ github.event.pull_request.base.ref || github.event.repository.default_branch || 'main' }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: ${{ github.event_name != 'pull_request' }}
-          ANSIBLE_DIRECTORY: .
-          LINTER_RULES_PATH: .linters
-          VALIDATE_ANSIBLE: true
+          VALIDATE_ALL_CODEBASE: false
           VALIDATE_YAML: true

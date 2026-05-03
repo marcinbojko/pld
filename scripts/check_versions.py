@@ -227,7 +227,7 @@ def main():
             else:
                 print(f"  {name}: URL rewrite failed — check manually", file=sys.stderr)
         SHARED_VARS.write_text(new_raw)
-        print(f"\nReview: git diff roles/pld/vars/shared.yml")
+        print("\nReview: git diff roles/pld/vars/shared.yml")
     elif outdated:
         print("\nRun with --update to apply URL changes to shared.yml.")
 

@@ -672,7 +672,7 @@ pld_unpack:
     source: kubent
     destination_file: kubent.tar.gz
     folder:
-  - url: https://github.com/nektos/act/releases/download/v0.2.83/act_Linux_x86_64.tar.gz
+  - url: https://github.com/nektos/act/releases/download/v0.2.88/act_Linux_x86_64.tar.gz
     destination: act
     source: act
     destination_file: act_Linux_x86_64.tar.gz
