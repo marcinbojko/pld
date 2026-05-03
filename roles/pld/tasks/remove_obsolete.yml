@@ -16,11 +16,13 @@
     - base
     - obsolete
 # Tasks removes all files from `pld_files_remove` list
-- name: "Remove_obsolete_files_from_variables_file: {{ item.path }}"
+- name: "Remove obsolete files from variables file"
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent
   loop: "{{ pld_files_remove | default([]) }}"
+  loop_control:
+    label: "{{ item.path }}"
   retries: "{{ pld_retries_count }}"
   delay: "{{ pld_delay_time }}"
   register: r_files_remove

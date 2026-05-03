@@ -49,6 +49,8 @@
 ### act (local GitHub Actions runner) ###
 .github/act/*.secrets
 .github/act/*.env
+.env
+.env.*
 
 ### Python ###
 __pycache__/
